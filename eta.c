@@ -5,11 +5,13 @@
 void init_sdl()
 {
   SDL_Init(SDL_INIT_VIDEO);
+  TTF_Init();
 }
 
 void close_sdl(Screen* sc)
 {
   SDL_DestroyWindow(sc->window);
+  TTF_Quit();
   SDL_Quit();
 }
 
@@ -75,7 +77,16 @@ void draw_circ(Screen *sc, Vec p, float r, Color c)
   filledCircleRGBA(sc->impl, p.x, p.y, r, c.r, c.g, c.b, c.a);
 }
 
-// TODO: void draw_text
+void draw_text(Screen *sc, const char *text, const char *font, int size, Vec a, Vec b, Color c)
+{
+  TTF_Font* f = TTF_OpenFont(font, size);
+  SDL_Surface* s_m = TTF_RenderText_Solid(f, text, RGB(c));
+  SDL_Texture* msg = SDL_CreateTextureFromSurface(sc->impl, s_m);
+  SDL_RenderCopy(sc->impl, msg, NULL, gen_rect(a, b));
+  SDL_FreeSurface(s_m);
+  SDL_DestroyTexture(msg);
+  TTF_CloseFont(font);
+}
 
 // ERRORS:
 void message_box(const Screen *sc, const char *title, const char *message)

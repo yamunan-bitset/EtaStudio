@@ -36,6 +36,8 @@ typedef struct keyboard {
 
 #define xy(x, y) (Vec) {x, y}
 #define col(r, g, b, a) (Color) {r, g, b, a}
+#define RGB(c) (SDL_Color) {c.r, c.g, c.b}
+#define RGBA(c) (SDL_Color) {c.r, c.g, c.b, 255}
 
 void init_sdl();
 void close_sdl(Screen*);
@@ -50,7 +52,7 @@ SDL_Rect *gen_rect(Vec, Vec);
 void draw_quad(Screen*, Vec, Vec, Color);
 void draw_box(Screen*, Vec, Vec, Color);
 void draw_circ(Screen*, Vec, float, Color);
-// TODO: Render TExt using sdl_ttf
+void draw_text(Screen*, const char*, const char*, int, Vec, Vec, Color);
 
 void message_box(const Screen*, const char*, const char*);
 void exit_with_error_msg(const Screen*, const char*);

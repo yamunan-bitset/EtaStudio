@@ -40,6 +40,8 @@ int main()
 	  draw_quad(&sc, xy(20, 80), xy(40, 60), col(10, 255, 10, 200));
 	  draw_circ(&sc, xy(sc.dim.x / 2, sc.dim.y / 2), 50, col(200, 10, 30, 100));
 	  draw_box(&sc, xy(750, 480), xy(500, 700), col(0, 0, 0, 255));
+	  draw_text(&sc, "Hello, World!", "/usr/share/fonts/TTF/IBMPlexMono-Bold.ttf",
+		    24, xy(0, 0), xy(100, 100), col(255, 0, 0, 255));
 	  update_sdl(&sc);
 	}
     }
