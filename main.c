@@ -18,7 +18,8 @@ int main()
 
   // Font
   TTF_Font *font = TTF_OpenFont("TheSansPlain.ttf", 20);
-  SDL_Texture *tex = gen_text(&sc, "Press h for Help", font, col(0, 255, 0, 255));
+  SDL_Texture *help = gen_text(&sc, "Press h for Help", font, col(0, 255, 0, 255));
+  SDL_Texture *start = gen_text(&sc, "Press space to start sim", font, col(0, 255, 0, 255));
   
   // 3 bodies:
   Vec b1, b2, b3;
@@ -42,9 +43,13 @@ int main()
 		  sc.done = true;
 		  break;
 		case SDLK_h:
-		  message_box(&sc, "Help", "Click 3 times to spawn 3 bodies.\nThen press space to start");
+		  message_box(&sc, "Help", "Click 3 times to spawn 3 bodies.\nThen press space to start.");
 		  break;
 		case SDLK_SPACE:
+		  if (b1.x == 0 && b1.y == 0
+		      || b2.x == 0 && b2.y == 0
+		      || b3.x == 0 && b3.y == 0)
+		    message_box(&sc, "Error", "Cannot start sim.\n Are you sure you clicked 3 times?\nPress h for more details.");
 		  // TODO: start sim
 		  break;
 		}
@@ -86,7 +91,8 @@ int main()
 	draw_circ(&sc, b3, 30, col(200, 30, 200, 255));
       
       draw_box(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
-      draw_texture(&sc, tex, xy(1125, 850));
+      draw_texture(&sc, help, xy(1130, 825));
+      draw_texture(&sc, start, xy(1100, 850));
       update_sdl(&sc);
     }
   // Quit:
