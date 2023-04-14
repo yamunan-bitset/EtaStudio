@@ -77,13 +77,19 @@ void draw_circ(Screen *sc, Vec p, float r, Color c)
   filledCircleRGBA(sc->impl, p.x, p.y, r, c.r, c.g, c.b, c.a);
 }
 
-void draw_text(Screen *sc, const char *text, TTF_Font *font, Vec a, Color c)
+SDL_Texture *gen_text(Screen *sc, const char *text, TTF_Font *font, Color c)
 {
   SDL_Surface *sur = TTF_RenderText_Solid(font, text, RGBA(c));
   SDL_Texture *tex = SDL_CreateTextureFromSurface(sc->impl, sur);
+  SDL_FreeSurface(sur);
+  return tex;
+}
+
+void draw_texture(Screen *sc, SDL_Texture *tex, Vec a)
+{
   SDL_Rect rect;
   rect.x = a.x;
-  rect.x = a.y;
+  rect.y = a.y;
   SDL_QueryTexture(tex, NULL, NULL, &rect.w, &rect.h);
   SDL_RenderCopy(sc->impl, tex, NULL, &rect);
 }
@@ -96,7 +102,7 @@ void message_box(const Screen *sc, const char *title, const char *message)
 
 void exit_with_error_msg(const Screen* sc, const char* msg)
 {
-  message_box("EtaStudio:", msg, sc);
+  message_box(sc, "EtaStudio:", msg);
   exit(1);
 }
 

@@ -41,7 +41,7 @@ typedef struct keyboard {
 
 void init_sdl();
 void close_sdl(Screen*);
-void setup_screem(Screen*);
+void setup_screen(Screen*);
 void render_sdl(Screen*);
 void update_sdl(Screen*);
 
@@ -52,7 +52,8 @@ SDL_Rect *gen_rect(Vec, Vec);
 void draw_quad(Screen*, Vec, Vec, Color);
 void draw_box(Screen*, Vec, Vec, Color);
 void draw_circ(Screen*, Vec, float, Color);
-void draw_text(Screen*, const char*, TTF_Font*, Vec, Color);
+SDL_Texture *gen_text(Screen*, const char*, TTF_Font*, Color);
+void draw_texture(Screen*, SDL_Texture*, Vec);
 
 void message_box(const Screen*, const char*, const char*);
 void exit_with_error_msg(const Screen*, const char*);

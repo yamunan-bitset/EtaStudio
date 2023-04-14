@@ -18,11 +18,13 @@ int main()
 
   // Font
   TTF_Font *font = TTF_OpenFont("TheSansPlain.ttf", 20);
-
-  Vec a = xy(100, 100);
-  Vec b = xy(300, 300);
+  SDL_Texture *tex = gen_text(&sc, "Press h for Help", font, col(0, 255, 0, 255));
   
+  // 3 bodies:
+  Vec b1, b2, b3;
+
   // Loop
+  int mouseX, mouseY;
   while (!sc.done)
     {
       // Handle:
@@ -33,50 +35,58 @@ int main()
 	    case SDL_QUIT:
 	      sc.done = true;
 	      break;
-	    }
-	  switch (sc.event.key.keysym.sym)
-	    {
-	    case SDLK_q:
-	      sc.done = true;
+	    case SDL_KEYDOWN:
+	      switch (sc.event.key.keysym.sym)
+		{
+		case SDLK_q:
+		  sc.done = true;
+		  break;
+		case SDLK_h:
+		  message_box(&sc, "Help", "Click 3 times to spawn 3 bodies.\nThen press space to start");
+		  break;
+		case SDLK_SPACE:
+		  // TODO: start sim
+		  break;
+		}
 	      break;
-	    case SDLK_x:
-	      message_box(&sc, "Hello, World!", "Hi");
-	      break;
-		  
-	    case SDLK_w:
-	      a.y -= 100;
-	      break;
-	    case SDLK_a:
-	      a.x -= 100;
-	      break;
-	    case SDLK_s:
-	      a.y += 100;
-	      break;
-	    case SDLK_d:
-	      a.x += 100;
-	      break;
-
-	    case SDLK_UP:
-	      b.y -= 100;
-	      break;
-	    case SDLK_LEFT:
-	      b.x -= 100;
-	      break;
-	    case SDLK_DOWN:
-	      b.y += 100;
-	      break;
-	    case SDLK_RIGHT:
-	      b.x += 100;
-	      break;
+	    case SDL_MOUSEBUTTONDOWN:
+	      SDL_GetMouseState(&mouseX, &mouseY);
+	      switch (sc.event.button.button)
+		{
+		case SDL_BUTTON_LEFT:
+		  if (b1.x == 0 && b1.y == 0)
+		    {
+		      b1.x = mouseX;
+		      b1.y = mouseY;
+		    }
+		  else if (b2.x == 0 && b2.y == 0)
+		    {
+		      b2.x = mouseX;
+		      b2.y = mouseY;
+		    }
+		  else if (b3.x == 0 && b3.y == 0)
+		    {
+		      b3.x = mouseX;
+		      b3.y = mouseY;
+		    }
+		  break;
+		}
+	      break;  
 	    }
 	}
 
       // Render:
       render_sdl(&sc);
-      draw_circ(&sc, xy(sc.dim.x / 2, sc.dim.y / 2), 50, col(200, 200, 30, 255));
-      draw_box(&sc, a, b, col(100, 0, 0, 255));
+
+      if (b1.x != 0 && b1.y != 0)
+	draw_circ(&sc, b1, 30, col(200, 200, 30, 255));
+      if (b2.x != 0 && b2.y != 0)
+	draw_circ(&sc, b2, 30, col(30, 200, 200, 255));
+      if (b3.x != 0 && b3.y != 0)
+	draw_circ(&sc, b3, 30, col(200, 30, 200, 255));
+      
       draw_box(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
-      draw_text(&sc, "Hello, World! From Eta!", font, xy(100, 100), col(255, 0, 0, 255));
+      draw_texture(&sc, tex, xy(1125, 850));
       update_sdl(&sc);
     }
   // Quit:
