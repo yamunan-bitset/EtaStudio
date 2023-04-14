@@ -52,7 +52,7 @@ SDL_Rect *gen_rect(Vec, Vec);
 void draw_quad(Screen*, Vec, Vec, Color);
 void draw_box(Screen*, Vec, Vec, Color);
 void draw_circ(Screen*, Vec, float, Color);
-void draw_text(Screen*, const char*, const char*, int, Vec, Vec, Color);
+void draw_text(Screen*, const char*, TTF_Font*, Vec, Color);
 
 void message_box(const Screen*, const char*, const char*);
 void exit_with_error_msg(const Screen*, const char*);
