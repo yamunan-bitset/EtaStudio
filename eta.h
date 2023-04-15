@@ -30,9 +30,28 @@ typedef struct screen {
 } Screen;
 
 typedef struct keyboard {
-    const uint8_t* keys;
-    int states[256];
+  const uint8_t* keys;
+  int states[256];
 } Key;
+
+typedef struct msgs {
+  const char *str;
+  Vec pos;
+  TTF_Font *font;
+  Color c;
+} Msg;
+
+typedef struct tex {
+  SDL_Texture *tex;
+  SDL_Surface *sur;
+  Vec pos;
+} Tex;
+
+typedef struct box {
+  Msg *msgs;
+  Tex *texs;
+  Vec top, bottom;
+} Box;
 
 #define xy(x, y) (Vec) {x, y}
 #define col(r, g, b, a) (Color) {r, g, b, a}
@@ -50,10 +69,12 @@ void handle_key(Screen*, int, void(*)());
 
 SDL_Rect *gen_rect(Vec, Vec);
 void draw_quad(Screen*, Vec, Vec, Color);
-void draw_box(Screen*, Vec, Vec, Color);
 void draw_circ(Screen*, Vec, float, Color);
+void draw_box_solid(Screen*, Vec, Vec, Color);
+void draw_box(Screen*, Box*, Color);
 SDL_Texture *gen_text(Screen*, const char*, TTF_Font*, Color);
 void draw_texture(Screen*, SDL_Texture*, Vec);
+void draw_text(Screen*, Msg*);
 
 void message_box(const Screen*, const char*, const char*);
 void exit_with_error_msg(const Screen*, const char*);

@@ -20,6 +20,26 @@ int main()
   TTF_Font *font = TTF_OpenFont("TheSansPlain.ttf", 20);
   SDL_Texture *help = gen_text(&sc, "Press h for Help", font, col(0, 255, 0, 255));
   SDL_Texture *start = gen_text(&sc, "Press space to start sim", font, col(0, 255, 0, 255));
+
+  Msg msg[2] ={
+    {
+      .str = "Hello, World!",
+      .pos = xy(200, 300),
+      .font = font,
+      .c = col(0, 255, 0, 255)
+    },
+    {
+      .str = "Bad Apple!",
+      .pos = xy(400, 500),
+      .font = font,
+      .c = col(0, 255, 0, 255)
+    }
+  };
+  Box bx1 = {
+    .msgs = msg,
+    .top = xy(200, 200),
+    .bottom = xy(600, 600)
+  };
   
   // 3 bodies:
   Vec b1, b2, b3;
@@ -90,7 +110,8 @@ int main()
       if (b3.x != 0 && b3.y != 0)
 	draw_circ(&sc, b3, 30, col(200, 30, 200, 255));
       
-      draw_box(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
+      draw_box_solid(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
+      draw_box(&sc, &bx1, col(200, 100, 50, 255));
       draw_texture(&sc, help, xy(1130, 825));
       draw_texture(&sc, start, xy(1100, 850));
       update_sdl(&sc);

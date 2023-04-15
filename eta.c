@@ -67,14 +67,23 @@ void draw_quad(Screen *sc, Vec a, Vec b, Color c)
   SDL_RenderFillRect(sc->impl, gen_rect(a, b));
 }
 
-void draw_box(Screen *sc, Vec a, Vec b, Color c)
+void draw_circ(Screen *sc, Vec p, float r, Color c)
+{
+  filledCircleRGBA(sc->impl, p.x, p.y, r, c.r, c.g, c.b, c.a);
+}
+
+void draw_box_solid(Screen *sc, Vec a, Vec b, Color c)
 {
   boxRGBA(sc->impl, a.x, a.y, b.x, b.y, c.r, c.g, c.b, c.a);
 }
 
-void draw_circ(Screen *sc, Vec p, float r, Color c)
+void draw_box(Screen *sc, Box *bx, Color c)
 {
-  filledCircleRGBA(sc->impl, p.x, p.y, r, c.r, c.g, c.b, c.a);
+  rectangleRGBA(sc->impl, bx->top.x, bx->top.y, bx->bottom.x, bx->bottom.y, c.r, c.g, c.b, c.a);
+  for (int i = 0; i < sizeof(bx->msgs) / sizeof(Msg); i++)
+    draw_text(&sc, &bx->msgs[i]);
+  for (int i = 0; i < sizeof(bx->texs) / sizeof(Tex); i++)
+    draw_texture(&sc, bx->texs[i].tex, bx->texs[i].pos);
 }
 
 SDL_Texture *gen_text(Screen *sc, const char *text, TTF_Font *font, Color c)
@@ -92,6 +101,12 @@ void draw_texture(Screen *sc, SDL_Texture *tex, Vec a)
   rect.y = a.y;
   SDL_QueryTexture(tex, NULL, NULL, &rect.w, &rect.h);
   SDL_RenderCopy(sc->impl, tex, NULL, &rect);
+}
+
+void draw_text(Screen *sc, Msg *msg)
+{
+  SDL_Texture* tex = gen_text(&sc, msg->str, msg->font, msg->c);
+  draw_texture(&sc, tex, msg->pos);
 }
 
 // ERRORS:
