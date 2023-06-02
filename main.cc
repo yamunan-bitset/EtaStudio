@@ -103,6 +103,7 @@ int main()
 		// Render:
 		render_sdl(&sc);
 
+		draw_box_solid(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
 		if (b1.x != 0 && b1.y != 0)
 			draw_circ(&sc, b1, 30, col(200, 200, 30, 255));
 		if (b2.x != 0 && b2.y != 0)
@@ -110,10 +111,11 @@ int main()
 		if (b3.x != 0 && b3.y != 0)
 			draw_circ(&sc, b3, 30, col(200, 30, 200, 255));
 
-		draw_box_solid(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
-		draw_box(&sc, &bx1, col(200, 100, 50, 255));
+		// draw_box(&sc, &bx1, col(200, 100, 50, 255));
 		draw_texture(&sc, help, xy(1130, 825));
 		draw_texture(&sc, start, xy(1100, 850));
+		draw_text(&sc, &msg[0]);
+		draw_text(&sc, &msg[1]);
 		update_sdl(&sc);
 	}
 	// Quit:
