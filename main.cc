@@ -1,4 +1,5 @@
 #include "eta.hh"
+#include "imgui_sdl.hh"
 
 // Example file for 3body simulator
 
@@ -15,6 +16,9 @@ int main()
 	// Setup
 	init_sdl();
 	setup_screen(&sc);
+
+	ImGui::CreateContext();
+	ImGuiSDL::Initialize(sc.impl, sc.dim.x, sc.dim.y);
 
 	// Font
 	TTF_Font* font = TTF_OpenFont("TheSansPlain.ttf", 20);
@@ -43,16 +47,26 @@ int main()
 
 	// 3 bodies:
 	Vec b1 = { 0, 0 }, b2 = { 0, 0 }, b3 = { 0, 0 };
-
+	SDL_Texture* texture = SDL_CreateTexture(sc.impl, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 100, 100);
 	// Loop
-	int mouseX, mouseY;
+	int mouseX, mouseY, n_wins = 0;
 	while (!sc.done)
 	{
+		int wheel = 0;
+		ImGuiIO& io = ImGui::GetIO();
+
+		io.DisplaySize = ImVec2(1400, 900);
 		// Handle:
 		while (SDL_PollEvent(&sc.event))
 		{
 			switch (sc.event.type)
 			{
+			case SDL_WINDOWEVENT:
+
+				break;
+			case SDL_MOUSEWHEEL:
+				wheel = sc.event.wheel.y;
+				break;
 			case SDL_QUIT:
 				sc.done = true;
 				break;
@@ -100,25 +114,65 @@ int main()
 			}
 		}
 
+		int mouseX, mouseY;
+		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+		io.DeltaTime = 1.0f / 60.0f;
+		io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+		io.MouseWheel = static_cast<float>(wheel);
+
 		// Render:
 		render_sdl(&sc);
 
 		draw_box_solid(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
+
+		ImGui::NewFrame();
+		ImGui::SetNextWindowPos(ImVec2(0, 800));
+		{
+			ImGui::Begin("Hello, world!");
+			ImGui::Button("Look at this pretty button");
+			ImGui::End();
+		}
+		ImGui::SetNextWindowPos(ImVec2(100, 200));
 		if (b1.x != 0 && b1.y != 0)
+		{
 			draw_circ(&sc, b1, 30, col(200, 200, 30, 255));
+			ImGui::Begin("B1 Properties (Yellow)");
+			ImGui::Image(texture, ImVec2(100, 100));
+			ImGui::End();
+		}
+		ImGui::SetNextWindowPos(ImVec2(100, 400));
 		if (b2.x != 0 && b2.y != 0)
+		{
 			draw_circ(&sc, b2, 30, col(30, 200, 200, 255));
+			ImGui::Begin("B2 Properties (Cyan)");
+			ImGui::Image(texture, ImVec2(100, 100));
+			ImGui::End();
+		}
+		ImGui::SetNextWindowPos(ImVec2(100, 600));
 		if (b3.x != 0 && b3.y != 0)
+		{
 			draw_circ(&sc, b3, 30, col(200, 30, 200, 255));
+			ImGui::Begin("B3 Properties (Purple)");
+			ImGui::Image(texture, ImVec2(100, 100));
+			ImGui::End();
+		}
 
 		// draw_box(&sc, &bx1, col(200, 100, 50, 255));
 		draw_texture(&sc, help, xy(1130, 825));
 		draw_texture(&sc, start, xy(1100, 850));
 		draw_text(&sc, &msg[0]);
 		draw_text(&sc, &msg[1]);
+		
+		ImGui::ShowDemoWindow();
+		ImGui::Render();
+		ImGuiSDL::Render(ImGui::GetDrawData());
+
 		update_sdl(&sc);
 	}
 	// Quit:
+	ImGuiSDL::Deinitialize();
 	close_sdl(&sc);
 	return 0;
 }

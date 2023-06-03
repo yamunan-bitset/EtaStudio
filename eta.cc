@@ -4,7 +4,7 @@
 
 void init_sdl()
 {
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
 }
 
