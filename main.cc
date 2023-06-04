@@ -47,6 +47,7 @@ int main()
 
 	// 3 bodies:
 	Vec b1 = { 0, 0 }, b2 = { 0, 0 }, b3 = { 0, 0 };
+	float vel1 = 0.f, vel2 = 0.f, vel3 = 0.f;
 	SDL_Texture* texture = SDL_CreateTexture(sc.impl, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 100, 100);
 	// Loop
 	int mouseX, mouseY, n_wins = 0;
@@ -127,38 +128,28 @@ int main()
 
 		draw_box_solid(&sc, xy(1100, 700), xy(1300, 900), col(255, 0, 0, 255));
 
-		ImGui::NewFrame();
-		ImGui::SetNextWindowPos(ImVec2(0, 800));
-		{
-			ImGui::Begin("Hello, world!");
-			ImGui::Button("Look at this pretty button");
-			ImGui::End();
-		}
-		ImGui::SetNextWindowPos(ImVec2(100, 200));
 		if (b1.x != 0 && b1.y != 0)
 		{
 			draw_circ(&sc, b1, 30, col(200, 200, 30, 255));
-			ImGui::Begin("B1 Properties (Yellow)");
-			ImGui::Image(texture, ImVec2(100, 100));
-			ImGui::End();
 		}
-		ImGui::SetNextWindowPos(ImVec2(100, 400));
 		if (b2.x != 0 && b2.y != 0)
 		{
 			draw_circ(&sc, b2, 30, col(30, 200, 200, 255));
-			ImGui::Begin("B2 Properties (Cyan)");
-			ImGui::Image(texture, ImVec2(100, 100));
-			ImGui::End();
 		}
-		ImGui::SetNextWindowPos(ImVec2(100, 600));
 		if (b3.x != 0 && b3.y != 0)
 		{
 			draw_circ(&sc, b3, 30, col(200, 30, 200, 255));
-			ImGui::Begin("B3 Properties (Purple)");
-			ImGui::Image(texture, ImVec2(100, 100));
-			ImGui::End();
 		}
-
+		ImGui::NewFrame();
+		ImGui::SetNextWindowPos(ImVec2(100, 600));		
+		ImGui::Begin("Planet Properties");
+		{
+		  ImGui::SetWindowSize(ImVec2(500, 400));
+		  ImGui::SliderFloat("B1 initial Velocity", &vel1, -10.f, 10.f);
+		  ImGui::SliderFloat("B2 initial Velocity", &vel2, -10.f, 10.f);
+		  ImGui::SliderFloat("B3 initial Velocity", &vel3, -10.f, 10.f);
+		  ImGui::End();
+		}
 		// draw_box(&sc, &bx1, col(200, 100, 50, 255));
 		draw_texture(&sc, help, xy(1130, 825));
 		draw_texture(&sc, start, xy(1100, 850));

@@ -117,6 +117,11 @@ const char* get_error_msgs() { return error_msgs_buffer; }
 
 void error_msg(const char* msg)
 {
+#ifdef __WIN32
     strncat_s(error_msgs_buffer, "\n", ERROR_BUF_SIZE - 1);
     strncat_s(error_msgs_buffer, msg, ERROR_BUF_SIZE - 1);
+#elif defined(__linux__)
+    strncat(error_msgs_buffer, "\n", ERROR_BUF_SIZE - 1);
+    strncat(error_msgs_buffer, msg, ERROR_BUF_SIZE - 1);
+#endif
 }
