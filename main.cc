@@ -47,10 +47,13 @@ int main()
 
 	// 3 bodies:
 	Vec b1 = { 0, 0 }, b2 = { 0, 0 }, b3 = { 0, 0 };
-	float vel1 = 0.f, vel2 = 0.f, vel3 = 0.f;
-	SDL_Texture* texture = SDL_CreateTexture(sc.impl, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 100, 100);
+	Vecf vel1 = { 0.f, 0.f }, vel2 = { 0.f, 0.f }, vel3 = { 0.f, 0.f };
+	float g1 = 0.f, g2 = 0.f, g3 = 0.f;
 	// Loop
 	int mouseX, mouseY, n_wins = 0;
+
+	ImGuiWindowFlags window_flags = 0;
+	// window_flags |= ImGuiWindowFlags_NoMove;
 	while (!sc.done)
 	{
 		int wheel = 0;
@@ -140,15 +143,29 @@ int main()
 		{
 			draw_circ(&sc, b3, 30, col(200, 30, 200, 255));
 		}
+
 		ImGui::NewFrame();
-		ImGui::SetNextWindowPos(ImVec2(100, 600));		
-		ImGui::Begin("Planet Properties");
-		{
-		  ImGui::SetWindowSize(ImVec2(500, 400));
-		  ImGui::SliderFloat("B1 initial Velocity", &vel1, -10.f, 10.f);
-		  ImGui::SliderFloat("B2 initial Velocity", &vel2, -10.f, 10.f);
-		  ImGui::SliderFloat("B3 initial Velocity", &vel3, -10.f, 10.f);
-		  ImGui::End();
+		if (b1.x != 0 && b1.y != 0 && b2.x != 0 && b2.y != 0 && b3.x != 0 && b3.y != 0)
+		{		
+			ImGui::Begin("Planet Properties", NULL, window_flags);
+			{
+			  ImGui::SetWindowSize(ImVec2(700, 400));
+			  ImGui::Text("Properties of Yellow Planet");
+			  ImGui::SliderFloat("velocity x-component 1", &vel1.x, -10.f, 10.f);
+			  ImGui::SliderFloat("velocity y-component 1", &vel1.y, -10.f, 10.f);
+			  ImGui::SliderFloat("gravitational field strength 1", &g1, 0.f, 10.f);
+			  ImGui::Spacing();
+			  ImGui::Text("Properties of Cyan Planet");
+			  ImGui::SliderFloat("velocity x-component 2", &vel2.x, -10.f, 10.f);
+			  ImGui::SliderFloat("velocity y-component 2", &vel2.y, -10.f, 10.f);
+			  ImGui::SliderFloat("gravitational field strength 2", &g2, 0.f, 10.f);
+			  ImGui::Spacing();
+			  ImGui::Text("Properties of Purple Planet");
+			  ImGui::SliderFloat("velocity x-component 3", &vel3.x, -10.f, 10.f);
+			  ImGui::SliderFloat("velocity y-component 3", &vel3.y, -10.f, 10.f);
+			  ImGui::SliderFloat("gravitational field strength 3", &g3, 0.f, 10.f);
+			  ImGui::End();
+			}
 		}
 		// draw_box(&sc, &bx1, col(200, 100, 50, 255));
 		draw_texture(&sc, help, xy(1130, 825));
@@ -156,7 +173,7 @@ int main()
 		draw_text(&sc, &msg[0]);
 		draw_text(&sc, &msg[1]);
 		
-		ImGui::ShowDemoWindow();
+		// ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGuiSDL::Render(ImGui::GetDrawData());
 

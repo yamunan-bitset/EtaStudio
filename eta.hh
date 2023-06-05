@@ -13,6 +13,10 @@ typedef struct vec {
     int x, y;
 } Vec;
 
+typedef struct vecf {
+    float x, y;
+} Vecf;
+
 typedef struct color {
     uint8_t r;
     uint8_t g;
