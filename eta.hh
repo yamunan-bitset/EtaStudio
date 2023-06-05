@@ -1,13 +1,15 @@
 #ifndef __ETA_STUDIO__H__
 #define __ETA_STUDIO__H__
 
-#include <stdbool.h>
-#include <stdint.h>
+#include <string>
+#include <cstdint>
+#include <fstream>
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
 #include <imgui.h>
+#include <nlohmann/json.hpp>
 
 typedef struct vec {
     int x, y;
@@ -25,6 +27,7 @@ typedef struct color {
 } Color;
 
 typedef struct screen {
+    std::string title;
     SDL_Renderer* impl;
     SDL_Window* window;
     Vec dim;
@@ -81,6 +84,8 @@ void draw_box(Screen*, Box*, Color);
 SDL_Texture* gen_text(Screen*, const char*, TTF_Font*, Color);
 void draw_texture(Screen*, SDL_Texture*, Vec);
 void draw_text(Screen*, Msg*);
+
+Screen read_json(std::string);
 
 void message_box(const Screen*, const char*, const char*);
 void exit_with_error_msg(const Screen*, const char*);

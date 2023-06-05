@@ -20,7 +20,9 @@ void setup_screen(Screen* sc)
     SDL_Window* window;
     SDL_Renderer* renderer;
 
-    window = SDL_CreateWindow("EtaStudio", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    std::stringstream sst;
+    sst << "EtaStudio: " << sc->title;
+    window = SDL_CreateWindow(sst.str().c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         sc->dim.x, sc->dim.y, sc->fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -96,6 +98,34 @@ void draw_text(Screen* sc, Msg* msg)
 {
     SDL_Texture* tex = gen_text(sc, msg->str, msg->font, msg->c);
     draw_texture(sc, tex, msg->pos);
+}
+
+Screen read_json(std::string file)
+{
+    std::ifstream f(file);
+    nlohmann::json data = nlohmann::json::parse(f);
+    std::string title = data.value("title", "title not found");
+    std::string dim = data.value("dim", "dim not found");
+    std::string bg = data.value("bg", "bg not found");
+    size_t pos = dim.find('x');
+    size_t bcol = bg.find(' ');
+    int i = 0, ini = 0;
+    uint8_t strs[4];
+    while (bcol != std::string::npos)
+    {
+        strs[i] = std::stoi(bg.substr(ini, bcol - ini));
+        ini = bcol + 1;
+        bcol = bg.find(' ', ini);
+        i++;
+    }
+    Screen sc = {
+        .title = title,
+        .dim = xy(std::stoi(dim.substr(0, pos)), std::stoi(dim.substr(pos + 1, dim.size() - 1))),
+        .bg = { strs[0], strs[1], strs[2], strs[3] },
+        .fullscreen = false,
+        .done = false
+    };
+    return sc;
 }
 
 // ERRORS:

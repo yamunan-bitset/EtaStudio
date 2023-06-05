@@ -2,17 +2,9 @@
 #include "imgui_sdl.hh"
 
 // Example file for 3body simulator
-
-static Screen sc = {
-  .dim = xy(1400, 900),
-  .offset = xy(20, 20),
-  .bg = { 2, 2, 10, 255 },
-  .fullscreen = false,
-  .done = false
-};
-
 int main()
 {
+	Screen sc = read_json("window.json");
 	// Setup
 	init_sdl();
 	setup_screen(&sc);
