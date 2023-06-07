@@ -3,3 +3,5 @@ EtaStudio*
 Debug
 x64
 example
+*~
+*.o
