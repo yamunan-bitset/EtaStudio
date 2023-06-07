@@ -8,8 +8,19 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
+#ifdef __WIN32
 #include <imgui.h>
+#elif defined(__linux__)
+#include <imgui/imgui.h>
+#endif
+#include "imgui_sdl.hh"
 #include <nlohmann/json.hpp>
+
+
+#define xy(x, y) Vec({x, y})
+#define col(r, g, b, a) Color({r, g, b, a})
+#define RGB(c) SDL_Color({c.r, c.g, c.b})
+#define RGBA(c) SDL_Color({c.r, c.g, c.b, 255})
 
 typedef struct vec {
     int x, y;
@@ -30,11 +41,11 @@ typedef struct screen {
     std::string title;
     SDL_Renderer* impl;
     SDL_Window* window;
-    Vec dim;
+    Vec dim = xy(800, 800);
     Vec offset;
-    struct color bg;
-    bool fullscreen;
-    bool done;
+    Color bg = { 0, 0, 0, 255 };
+    bool fullscreen = false;
+    bool done = false;
     SDL_Event event;
 } Screen;
 
@@ -62,12 +73,6 @@ typedef struct box {
     Vec top, bottom;
 } Box;
 
-#define xy(x, y) Vec({x, y})
-#define col(r, g, b, a) Color({r, g, b, a})
-#define RGB(c) SDL_Color({c.r, c.g, c.b})
-#define RGBA(c) SDL_Color({c.r, c.g, c.b, 255})
-
-
 void init_sdl();
 void close_sdl(Screen*);
 void setup_screen(Screen*);
@@ -86,6 +91,8 @@ void draw_texture(Screen*, SDL_Texture*, Vec);
 void draw_text(Screen*, Msg*);
 
 Screen read_json(std::string);
+
+int eta_run(Screen*, void (*setup)(), void (*loop)());
 
 void message_box(const Screen*, const char*, const char*);
 void exit_with_error_msg(const Screen*, const char*);

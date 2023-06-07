@@ -2,7 +2,11 @@
 
 #include <SDL2/SDL.h>
 
+#ifdef __WIN32
 #include <imgui.h>
+#elif defined(__linux__)
+#include <imgui/imgui.h>
+#endif
 
 #include <map>
 #include <list>

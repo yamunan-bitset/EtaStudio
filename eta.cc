@@ -5,6 +5,8 @@
 void init_sdl()
 {
     SDL_Init(SDL_INIT_EVERYTHING);
+    SDL_SetHint(SDL_HINT_VIDEO_X11_XRANDR, "1");
+    SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
     TTF_Init();
 }
 
@@ -71,10 +73,10 @@ void draw_box_solid(Screen* sc, Vec a, Vec b, Color c)
 void draw_box(Screen* sc, Box* bx, Color c)
 {
     rectangleRGBA(sc->impl, bx->top.x, bx->top.y, bx->bottom.x, bx->bottom.y, c.r, c.g, c.b, c.a);
-    for (int i = 0; i < sizeof(bx->msgs) / sizeof(Msg); i++)
+    /*for (int i = 0; i < sizeof(bx->msgs) / sizeof(Msg); i++)
         draw_text(sc, &bx->msgs[i]);
     for (int i = 0; i < sizeof(bx->texs) / sizeof(Tex); i++)
-        draw_texture(sc, bx->texs[i].tex, bx->texs[i].pos);
+        draw_texture(sc, bx->texs[i].tex, bx->texs[i].pos);*/
 }
 
 SDL_Texture* gen_text(Screen* sc, const char* text, TTF_Font* font, Color c)
@@ -126,6 +128,39 @@ Screen read_json(std::string file)
         .done = false
     };
     return sc;
+}
+
+int eta_run(Screen* sc, void (*setup)(), void (*loop)())
+{
+    init_sdl();
+    setup_screen(sc);
+    ImGui::CreateContext();
+    ImGuiSDL::Initialize(sc->impl, sc->dim.x, sc->dim.y);
+    setup();
+
+    while (!sc->done)
+    {
+        int mouseX, mouseY;
+        const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+        int wheel = 0;
+        wheel = sc->event.wheel.y;
+        ImGuiIO& io = ImGui::GetIO();
+        io.DisplaySize = ImVec2(sc->dim.x, sc->dim.y);
+        io.DeltaTime = 1.0f / 60.0f;
+        io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+        io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+        io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+        io.MouseWheel = static_cast<float>(wheel);
+        render_sdl(sc);
+        loop();
+        ImGui::Render();
+        ImGuiSDL::Render(ImGui::GetDrawData());
+        update_sdl(sc);
+    }
+
+    ImGuiSDL::Deinitialize();
+    close_sdl(sc);
+    return 0; // TODO: handle errors
 }
 
 // ERRORS:
