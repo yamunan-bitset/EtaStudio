@@ -1,3 +1,4 @@
+// Example file for 3body simulator
 #include "eta.hh"
 #include "imgui_sdl.hh"
 
@@ -14,31 +15,37 @@ Screen sc = {
 Vec b1 = { 0, 0 }, b2 = { 0, 0 }, b3 = { 0, 0 };
 Vecf vel1 = { 0.f, 0.f }, vel2 = { 0.f, 0.f }, vel3 = { 0.f, 0.f };
 float m1 = 1.f, m2 = 1.f, m3 = 1.f;
+
 // Loop
-int mouseX, mouseY, n_wins = 0;
-
-Box bx1 = {
-  .top = xy(1100, 700),
-  .bottom = xy(1300, 900)
-};
-
-// Example file for 3body simulator
-void setup()
-{
-	// Setup
+void Eta::Setup()
+{	
+	fonts.push_back(TTF_OpenFont("TheSansPlain.ttf", 20));
+	Msg msg[2] = {
+	  {
+		.str = "Press h for Help",
+		.pos = xy(1130, 825),
+		.font = fonts[0],
+		.c = col(255, 0, 0, 255)
+	  },
+	  {
+		.str = "Press Space to start sim",
+		.pos = xy(1100, 850),
+		.font = fonts[0],
+		.c = col(0, 255, 0, 255)
+	  }
+	};
+	for (Msg u : msg)
+		msgs.push_back(u);
+	Box bx1 = {
+		.top = xy(1100, 700),
+		.bottom = xy(1300, 900),
+		.c = col(200, 100, 50, 255)
+	};
+	boxes.push_back(bx1);
 }
 
-#include <iostream>
-void loop()
+void Eta::Loop()
 {
-	TTF_Font* font = TTF_OpenFont("TheSansPlain.ttf", 20);
-	Msg msg = {
-		.str = "Hello, World!",
-		.pos = xy(100, 100),
-		.font = font,
-		.c = col(255, 255, 255, 255)
-	}; // TODO: make a class to handle eta_run();
-
 	// Handle:
 	while (SDL_PollEvent(&sc.event))
 	{
@@ -66,7 +73,6 @@ void loop()
 					}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				SDL_GetMouseState(&mouseX, &mouseY);
 				switch (sc.event.button.button)
 				{
 				case SDL_BUTTON_LEFT:
@@ -126,11 +132,10 @@ void loop()
 			ImGui::End();
 		}
 	}
-	draw_text(&sc, &msg);
-	draw_box(&sc, &bx1, col(200, 100, 50, 255));
 }
 
 int main()
 {
-	return eta_run(&sc, setup, loop);
+	Eta eta(sc);
+	return eta.Run();
 }

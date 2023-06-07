@@ -4,11 +4,12 @@
 #include <string>
 #include <cstdint>
 #include <fstream>
+#include <vector>
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
-#ifdef __WIN32
+#ifdef _WIN32
 #include <imgui.h>
 #elif defined(__linux__)
 #include <imgui/imgui.h>
@@ -71,6 +72,7 @@ typedef struct box {
     Msg* msgs;
     Tex* texs;
     Vec top, bottom;
+    Color c;
 } Box;
 
 void init_sdl();
@@ -85,7 +87,7 @@ void handle_key(Screen*, int, void(*)());
 void draw_quad(Screen*, Vec, Vec, Color);
 void draw_circ(Screen*, Vec, float, Color);
 void draw_box_solid(Screen*, Vec, Vec, Color);
-void draw_box(Screen*, Box*, Color);
+void draw_box(Screen*, Box*);
 SDL_Texture* gen_text(Screen*, const char*, TTF_Font*, Color);
 void draw_texture(Screen*, SDL_Texture*, Vec);
 void draw_text(Screen*, Msg*);
@@ -98,5 +100,26 @@ void message_box(const Screen*, const char*, const char*);
 void exit_with_error_msg(const Screen*, const char*);
 const char* get_error_msgs();
 void error_msg(const char*);
+
+
+class Eta
+{
+public:
+    Screen sc;
+
+    std::vector<Msg> msgs;
+    std::vector<Box> boxes;
+    std::vector<TTF_Font*> fonts;
+    int mouseX, mouseY;
+    
+    Eta(Screen m_sc) : sc(m_sc) {}
+    ~Eta() {}
+
+    void DrawMsgs();
+    void DrawBoxes();
+    void Setup();
+    void Loop();
+    int Run();
+};
 
 #endif
