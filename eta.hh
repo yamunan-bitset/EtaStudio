@@ -91,6 +91,7 @@ void draw_box(Screen*, Box*);
 SDL_Texture* gen_text(Screen*, const char*, TTF_Font*, Color);
 void draw_texture(Screen*, SDL_Texture*, Vec);
 void draw_text(Screen*, Msg*);
+void draw_arrow(Screen*, Vec, Vec, Color);
 
 Screen read_json(std::string);
 
@@ -118,6 +119,7 @@ public:
     void DrawMsgs();
     void DrawBoxes();
     void Setup();
+    void Handle();
     void Loop();
     int Run();
 };

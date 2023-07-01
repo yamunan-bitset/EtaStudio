@@ -102,6 +102,12 @@ void draw_text(Screen* sc, Msg* msg)
     draw_texture(sc, tex, msg->pos);
 }
 
+void draw_arrow(Screen* sc, Vec a, Vec b, Color c)
+{
+    SDL_SetRenderDrawColor(sc->impl, c.r, c.g, c.b, c.a);
+    SDL_RenderDrawLine(sc->impl, a.x, a.y, b.x, b.y);
+}
+
 Screen read_json(std::string file)
 {
     std::ifstream f(file);
@@ -197,6 +203,7 @@ int Eta::Run()
         io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
         io.MouseWheel = static_cast<float>(wheel);
         render_sdl(&sc);
+        Handle();
         Loop();
         DrawBoxes();
         DrawMsgs();
