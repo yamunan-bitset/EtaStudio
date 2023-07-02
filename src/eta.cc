@@ -95,7 +95,8 @@ void draw_texture(Screen* sc, SDL_Texture* tex, Vec a)
     SDL_QueryTexture(tex, NULL, NULL, &rect.w, &rect.h);
     SDL_RenderCopy(sc->impl, tex, NULL, &rect);
 }
-
+#include <iostream>
+#include <string>
 void draw_text(Screen* sc, Msg* msg)
 {
     SDL_Texture* tex = gen_text(sc, msg->str, msg->font, msg->c);

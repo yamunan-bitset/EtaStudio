@@ -1,6 +1,6 @@
 // Example file for 3body simulator
-#include "eta.hh"
-#include "imgui_sdl.hh"
+#include "../../src/eta.hh"
+#include "../../src/imgui_sdl.hh"
 
 Screen sc = { // = read_json("window.json");
 	.title = "3-Body Simulator",
@@ -14,6 +14,7 @@ Screen sc = { // = read_json("window.json");
 Vec b1 = { 0, 0 }, b2 = { 0, 0 }, b3 = { 0, 0 };
 Vecf vel1 = { 0.f, 0.f }, vel2 = { 0.f, 0.f }, vel3 = { 0.f, 0.f };
 float m1 = 1.f, m2 = 1.f, m3 = 1.f;
+bool start_sim = false;
 
 // Setup
 void Eta::Setup()
@@ -67,7 +68,7 @@ void Eta::Handle()
 					|| b2.x == 0 && b2.y == 0
 					|| b3.x == 0 && b3.y == 0)
 					message_box(&sc, "Error", "Cannot start sim.\n Are you sure you clicked 3 times?\nPress h for more details.");
-				// TODO: start sim
+				start_sim = !start_sim;
 				break;
 			}
 			break;
@@ -100,6 +101,11 @@ void Eta::Handle()
 // Loop
 void Eta::Loop()
 {
+	if (start_sim)
+	{
+		b1.x += 0.2*vel1.x; b2.x += 0.2*vel2.x; b3.x += 0.2*vel3.x;
+		b1.y -= 0.2*vel1.y; b2.y -= 0.2*vel2.y; b3.y -= 0.2*vel3.y;
+	}
 	if (b1.x != 0 && b1.y != 0)
 	{
 		draw_circ(&sc, b1, m1*10, col(200, 200, 30, 255));
@@ -122,18 +128,18 @@ void Eta::Loop()
 		ImGui::Begin("Planet Properties");
 		{
 			ImGui::Text("Properties of Yellow Planet");
-			ImGui::SliderFloat("velocity x-component 1", &vel1.x, -10.f, 10.f);
-			ImGui::SliderFloat("velocity y-component 1", &vel1.y, -10.f, 10.f);
+			ImGui::SliderFloat("velocity x-component 1", &vel1.x, -5.f, 5.f);
+			ImGui::SliderFloat("velocity y-component 1", &vel1.y, -5.f, 5.f);
 			ImGui::SliderFloat("mass 1", &m1, 1.f, 10.f);
 			ImGui::Spacing();
 			ImGui::Text("Properties of Cyan Planet");
-			ImGui::SliderFloat("velocity x-component 2", &vel2.x, -10.f, 10.f);
-			ImGui::SliderFloat("velocity y-component 2", &vel2.y, -10.f, 10.f);
+			ImGui::SliderFloat("velocity x-component 2", &vel2.x, -5.f, 5.f);
+			ImGui::SliderFloat("velocity y-component 2", &vel2.y, -5.f, 5.f);
 			ImGui::SliderFloat("mass 2", &m2, 1.f, 10.f);
 			ImGui::Spacing();
 			ImGui::Text("Properties of Purple Planet");
-			ImGui::SliderFloat("velocity x-component 3", &vel3.x, -10.f, 10.f);
-			ImGui::SliderFloat("velocity y-component 3", &vel3.y, -10.f, 10.f);
+			ImGui::SliderFloat("velocity x-component 3", &vel3.x, -5.f, 5.f);
+			ImGui::SliderFloat("velocity y-component 3", &vel3.y, -5.f, 5.f);
 			ImGui::SliderFloat("mass 3", &m3, 1.f, 10.f);
 			ImGui::End();
 		}
