@@ -38,6 +38,10 @@ void setup_screen(Screen* sc)
 void render_sdl(Screen* sc)
 {
     SDL_SetRenderDrawColor(sc->impl, sc->bg.r, sc->bg.g, sc->bg.b, sc->bg.a);
+}
+
+void clear_sdl(Screen* sc)
+{
     SDL_RenderClear(sc->impl);
 }
 
@@ -95,8 +99,7 @@ void draw_texture(Screen* sc, SDL_Texture* tex, Vec a)
     SDL_QueryTexture(tex, NULL, NULL, &rect.w, &rect.h);
     SDL_RenderCopy(sc->impl, tex, NULL, &rect);
 }
-#include <iostream>
-#include <string>
+
 void draw_text(Screen* sc, Msg* msg)
 {
     SDL_Texture* tex = gen_text(sc, msg->str, msg->font, msg->c);
@@ -107,6 +110,17 @@ void draw_arrow(Screen* sc, Vec a, Vec b, Color c)
 {
     SDL_SetRenderDrawColor(sc->impl, c.r, c.g, c.b, c.a);
     SDL_RenderDrawLine(sc->impl, a.x, a.y, b.x, b.y);
+}
+
+void draw_mesh(Screen* sc, Vec interval, Color c)
+{
+    SDL_SetRenderDrawColor(sc->impl, c.r, c.g, c.b, c.a);
+    for (int i = 0; i <= sc->dim.y; i += interval.y)
+        for (int j = 0; j <= sc->dim.x; j += interval.x)
+        {
+            SDL_RenderDrawLine(sc->impl, i, 0, i, sc->dim.y);
+            SDL_RenderDrawLine(sc->impl, 0, j, sc->dim.y, j);
+        }
 }
 
 Screen read_json(std::string file)
@@ -135,12 +149,6 @@ Screen read_json(std::string file)
         .done = false
     };
     return sc;
-}
-
-int eta_run(Screen* sc, void (*setup)(), void (*loop)())
-{
-    
-    return 0; // TODO: handle errors
 }
 
 // ERRORS:
@@ -183,6 +191,11 @@ void Eta::DrawBoxes()
         draw_box(&sc, &u);
 }
 
+void Eta::UpdateFrame()
+{
+    clear_sdl(&sc);
+}
+
 int Eta::Run()
 {
     init_sdl();
@@ -204,6 +217,7 @@ int Eta::Run()
         io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
         io.MouseWheel = static_cast<float>(wheel);
         render_sdl(&sc);
+        ImGui::NewFrame();
         Handle();
         Loop();
         DrawBoxes();

@@ -101,6 +101,7 @@ void Eta::Handle()
 // Loop
 void Eta::Loop()
 {
+	UpdateFrame();
 	if (start_sim)
 	{
 		b1.x += 0.2*vel1.x; b2.x += 0.2*vel2.x; b3.x += 0.2*vel3.x;
@@ -122,7 +123,7 @@ void Eta::Loop()
 		draw_arrow(&sc, b3, xy(int(b3.x + (20 * vel3.x)), int(b3.y + (-20 * vel3.y))), col(255, 0, 0, 255));
 	}
 
-	ImGui::NewFrame();
+	//ImGui::NewFrame();
 	if (b1.x != 0 && b1.y != 0 && b2.x != 0 && b2.y != 0 && b3.x != 0 && b3.y != 0)
 	{		
 		ImGui::Begin("Planet Properties");

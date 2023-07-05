@@ -79,6 +79,7 @@ void init_sdl();
 void close_sdl(Screen*);
 void setup_screen(Screen*);
 void render_sdl(Screen*);
+void clear_sdl(Screen*);
 void update_sdl(Screen*);
 
 void handle_type(Screen*, int, void(*)());
@@ -92,6 +93,7 @@ SDL_Texture* gen_text(Screen*, const char*, TTF_Font*, Color);
 void draw_texture(Screen*, SDL_Texture*, Vec);
 void draw_text(Screen*, Msg*);
 void draw_arrow(Screen*, Vec, Vec, Color);
+void draw_mesh(Screen*, Vec, Color);
 
 Screen read_json(std::string);
 
@@ -116,6 +118,7 @@ public:
     Eta(Screen m_sc) : sc(m_sc) {}
     ~Eta() {}
 
+    void UpdateFrame();
     void DrawMsgs();
     void DrawBoxes();
     void Setup();
