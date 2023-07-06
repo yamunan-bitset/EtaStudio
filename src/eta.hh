@@ -94,6 +94,7 @@ void draw_texture(Screen*, SDL_Texture*, Vec);
 void draw_text(Screen*, Msg*);
 void draw_arrow(Screen*, Vec, Vec, Color);
 void draw_mesh(Screen*, Vec, Color);
+void draw_fillrect(Screen*, Vec, Vec, Color);
 
 Screen read_json(std::string);
 

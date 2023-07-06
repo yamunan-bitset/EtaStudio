@@ -123,6 +123,11 @@ void draw_mesh(Screen* sc, Vec interval, Color c)
         }
 }
 
+void draw_fillrect(Screen* sc, Vec a, Vec b, Color c)
+{
+    boxRGBA(sc->impl, a.x, a.y, b.x, b.y, c.r, c.g, c.b, c.a);
+}
+
 Screen read_json(std::string file)
 {
     std::ifstream f(file);
