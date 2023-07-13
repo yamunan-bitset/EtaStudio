@@ -6,18 +6,24 @@ Screen sc = {
 	.bg = col(0, 0, 0, 255),
 };
 
-struct Player {
+int itime;
+
+class Player {
+public:
 	int vel;
-	Vec head = xy(100, 100);
+	Vec head;
 	int length;
-	Vec dir = xy(0, 0);
+	Vec dir;
 } p;
 
 void Eta::Setup()
 {
-	draw_mesh(&sc, xy(50, 50), col(255, 0, 0, 255));
+	p.head = xy(100, 100);
+	p.length = 2;
+	p.dir = xy(0, 1);
+	itime = 0;
 }
-
+#include <stdio.h>
 void Eta::Handle()
 {
 	while (SDL_PollEvent(&sc.event))
@@ -28,10 +34,10 @@ void Eta::Handle()
 		case SDL_KEYDOWN:
 			switch (sc.event.key.keysym.sym)
 			{
-			case SDLK_LEFT: p.dir = xy(-1, 0); break;
-			case SDLK_RIGHT: p.dir = xy(1, 0); break;
-			case SDLK_DOWN: p.dir = xy(0, 1); break;
-			case SDLK_UP: p.dir = xy(0, -1); break;
+			case SDLK_LEFT: p.dir = xy(-1, 0); printf("Left\n"); break;
+			case SDLK_RIGHT: p.dir = xy(1, 0); printf("Right\n"); break;
+			case SDLK_DOWN: p.dir = xy(0, 1); printf("Down\n"); break;
+			case SDLK_UP: p.dir = xy(0, -1); printf("Up\n"); break;
 			default: break;
 			}
 		default: break;
@@ -41,10 +47,26 @@ void Eta::Handle()
 
 void Eta::Loop()
 {
-	p.head.x += p.dir.x * 50;
-	p.head.y += p.dir.y * 50;
-	draw_fillrect(&sc, p.head, xy(p.head.x + 50, p.head.y + 50), col(0, 255, 0, 255));
-	p.dir = xy(0, 0);
+	ClearFrame();
+	itime++;
+	if (itime % 100 == 0)
+	{
+		p.head.x += p.dir.x * 50;
+		p.head.y += p.dir.y * 50;
+	}
+	if (p.head.x > 900)
+		p.head.x = 0;
+	if (p.head.y > 900)
+		p.head.y = 0;
+	if (p.head.x < 0)
+		p.head.x = 900;
+	if (p.head.y < 0)
+		p.head.y = 900;
+	EtaCore::draw_mesh(&sc, xy(50, 50), col(255, 0, 0, 255));
+	for (int i = 0; i < p.length; i++)
+	{
+		EtaCore::draw_fillrect(&sc, p.head, xy(p.head.x + 50 + 50*i*std::abs(p.dir.x), p.head.y + 50 + 50*i*std::abs(p.dir.y)), col(0, 255, 0, 255));
+	}
 }
 
 int main()

@@ -2,7 +2,7 @@
 
 // GENERAL:
 
-void init_sdl()
+void EtaCore::init_sdl()
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_SetHint(SDL_HINT_VIDEO_X11_XRANDR, "1");
@@ -10,14 +10,14 @@ void init_sdl()
     TTF_Init();
 }
 
-void close_sdl(Screen* sc)
+void EtaCore::close_sdl(Screen* sc)
 {
     SDL_DestroyWindow(sc->window);
     TTF_Quit();
     SDL_Quit();
 }
 
-void setup_screen(Screen* sc)
+void EtaCore::setup_screen(Screen* sc)
 {
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -35,46 +35,46 @@ void setup_screen(Screen* sc)
     sc->window = window;
 }
 
-void render_sdl(Screen* sc)
+void EtaCore::render_sdl(Screen* sc)
 {
     SDL_SetRenderDrawColor(sc->impl, sc->bg.r, sc->bg.g, sc->bg.b, sc->bg.a);
 }
 
-void clear_sdl(Screen* sc)
+void EtaCore::clear_sdl(Screen* sc)
 {
     SDL_RenderClear(sc->impl);
 }
 
-void update_sdl(Screen* sc)
+void EtaCore::update_sdl(Screen* sc)
 {
     SDL_RenderPresent(sc->impl);
     SDL_UpdateWindowSurface(sc->window);
 }
 
 // HANDLE:
-void handle_type(Screen* sc, int event, void (*fn)())
+void EtaCore::handle_type(Screen* sc, int event, void (*fn)())
 {
     if (sc->event.type == event) fn();
 }
 
-void handle_key(Screen* sc, int key, void (*fn)())
+void EtaCore::handle_key(Screen* sc, int key, void (*fn)())
 {
     if (sc->event.key.keysym.sym == key) fn();
 }
 
 // PRIMITIVES:
 
-void draw_circ(Screen* sc, Vec p, float r, Color c)
+void EtaCore::draw_circ(Screen* sc, Vec p, float r, Color c)
 {
     filledCircleRGBA(sc->impl, p.x, p.y, r, c.r, c.g, c.b, c.a);
 }
 
-void draw_box_solid(Screen* sc, Vec a, Vec b, Color c)
+void EtaCore::draw_box_solid(Screen* sc, Vec a, Vec b, Color c)
 {
     boxRGBA(sc->impl, a.x, a.y, b.x, b.y, c.r, c.g, c.b, c.a);
 }
 
-void draw_box(Screen* sc, Box* bx)
+void EtaCore::draw_box(Screen* sc, Box* bx)
 {
     rectangleRGBA(sc->impl, bx->top.x, bx->top.y, bx->bottom.x, bx->bottom.y, bx->c.r, bx->c.g, bx->c.b, bx->c.a);
     /*for (int i = 0; i < sizeof(bx->msgs) / sizeof(Msg); i++)
@@ -83,7 +83,7 @@ void draw_box(Screen* sc, Box* bx)
         draw_texture(sc, bx->texs[i].tex, bx->texs[i].pos);*/
 }
 
-SDL_Texture* gen_text(Screen* sc, const char* text, TTF_Font* font, Color c)
+SDL_Texture* EtaCore::gen_text(Screen* sc, const char* text, TTF_Font* font, Color c)
 {
     SDL_Surface* sur = TTF_RenderText_Solid(font, text, RGBA(c));
     SDL_Texture* tex = SDL_CreateTextureFromSurface(sc->impl, sur);
@@ -91,7 +91,7 @@ SDL_Texture* gen_text(Screen* sc, const char* text, TTF_Font* font, Color c)
     return tex;
 }
 
-void draw_texture(Screen* sc, SDL_Texture* tex, Vec a)
+void EtaCore::draw_texture(Screen* sc, SDL_Texture* tex, Vec a)
 {
     SDL_Rect rect;
     rect.x = a.x;
@@ -100,19 +100,19 @@ void draw_texture(Screen* sc, SDL_Texture* tex, Vec a)
     SDL_RenderCopy(sc->impl, tex, NULL, &rect);
 }
 
-void draw_text(Screen* sc, Msg* msg)
+void EtaCore::draw_text(Screen* sc, Msg* msg)
 {
-    SDL_Texture* tex = gen_text(sc, msg->str, msg->font, msg->c);
-    draw_texture(sc, tex, msg->pos);
+    SDL_Texture* tex = EtaCore::gen_text(sc, msg->str, msg->font, msg->c);
+    EtaCore::draw_texture(sc, tex, msg->pos);
 }
 
-void draw_arrow(Screen* sc, Vec a, Vec b, Color c)
+void EtaCore::draw_arrow(Screen* sc, Vec a, Vec b, Color c)
 {
     SDL_SetRenderDrawColor(sc->impl, c.r, c.g, c.b, c.a);
     SDL_RenderDrawLine(sc->impl, a.x, a.y, b.x, b.y);
 }
 
-void draw_mesh(Screen* sc, Vec interval, Color c)
+void EtaCore::draw_mesh(Screen* sc, Vec interval, Color c)
 {
     SDL_SetRenderDrawColor(sc->impl, c.r, c.g, c.b, c.a);
     for (int i = 0; i <= sc->dim.y; i += interval.y)
@@ -123,12 +123,12 @@ void draw_mesh(Screen* sc, Vec interval, Color c)
         }
 }
 
-void draw_fillrect(Screen* sc, Vec a, Vec b, Color c)
+void EtaCore::draw_fillrect(Screen* sc, Vec a, Vec b, Color c)
 {
     boxRGBA(sc->impl, a.x, a.y, b.x, b.y, c.r, c.g, c.b, c.a);
 }
 
-Screen read_json(std::string file)
+Screen EtaCore::read_json(std::string file)
 {
     std::ifstream f(file);
     nlohmann::json data = nlohmann::json::parse(f);
@@ -157,23 +157,23 @@ Screen read_json(std::string file)
 }
 
 // ERRORS:
-void message_box(const Screen* sc, const char* title, const char* message)
+void EtaCore::message_box(const Screen* sc, const char* title, const char* message)
 {
     SDL_ShowSimpleMessageBox(0, title, message, sc->window);
 }
 
-void exit_with_error_msg(const Screen* sc, const char* msg)
+void EtaCore::exit_with_error_msg(const Screen* sc, const char* msg)
 {
-    message_box(sc, "EtaStudio:", msg);
+    EtaCore::message_box(sc, "EtaStudio:", msg);
     exit(1);
 }
 
 #define ERROR_BUF_SIZE 1024 * 32
 static char error_msgs_buffer[ERROR_BUF_SIZE];
 
-const char* get_error_msgs() { return error_msgs_buffer; }
+const char* EtaCore::get_error_msgs() { return error_msgs_buffer; }
 
-void error_msg(const char* msg)
+void EtaCore::error_msg(const char* msg)
 {
 #ifdef __WIN32
     strncat_s(error_msgs_buffer, "\n", ERROR_BUF_SIZE - 1);
@@ -187,30 +187,40 @@ void error_msg(const char* msg)
 void Eta::DrawMsgs()
 {
     for (Msg u : msgs)
-        draw_text(&sc, &u);
+        EtaCore::draw_text(&sc, &u);
 }
 
 void Eta::DrawBoxes()
 {
     for (Box u : boxes)
-        draw_box(&sc, &u);
+        EtaCore::draw_box(&sc, &u);
 }
 
-void Eta::UpdateFrame()
+void Eta::ClearFrame()
 {
-    clear_sdl(&sc);
+    EtaCore::clear_sdl(&sc);
 }
 
 int Eta::Run()
 {
-    init_sdl();
-    setup_screen(&sc);
+    EtaCore::init_sdl();
+    EtaCore::setup_screen(&sc);
     ImGui::CreateContext();
     ImGuiSDL::Initialize(sc.impl, sc.dim.x, sc.dim.y);
     Setup();
-
+    float LOW_LIMIT = 0.0167f;
+    float HIGH_LIMIT = 0.1f;  
+    float last_time = time(NULL);
     while (!sc.done)
     {
+        float current_time = time(NULL);
+        dt = (current_time - last_time) / 1000.0f;
+        if (dt < LOW_LIMIT)
+            dt = LOW_LIMIT;
+        else if (dt > HIGH_LIMIT)
+            dt = HIGH_LIMIT;
+        last_time = current_time;
+        //ClearFrame();
         const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
         int wheel = 0;
         wheel = sc.event.wheel.y;
@@ -221,7 +231,7 @@ int Eta::Run()
         io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
         io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
         io.MouseWheel = static_cast<float>(wheel);
-        render_sdl(&sc);
+        EtaCore::render_sdl(&sc);
         ImGui::NewFrame();
         Handle();
         Loop();
@@ -229,10 +239,10 @@ int Eta::Run()
         DrawMsgs();
         ImGui::Render();
         ImGuiSDL::Render(ImGui::GetDrawData());
-        update_sdl(&sc);
+        EtaCore::update_sdl(&sc);
     }
 
     ImGuiSDL::Deinitialize();
-    close_sdl(&sc);
+    EtaCore::close_sdl(&sc);
     return 0; // TODO: Test For Failures
 }

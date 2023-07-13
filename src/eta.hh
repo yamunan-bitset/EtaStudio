@@ -75,36 +75,38 @@ typedef struct box {
     Color c;
 } Box;
 
-void init_sdl();
-void close_sdl(Screen*);
-void setup_screen(Screen*);
-void render_sdl(Screen*);
-void clear_sdl(Screen*);
-void update_sdl(Screen*);
+namespace EtaCore 
+{
+    void init_sdl();
+    void close_sdl(Screen*);
+    void setup_screen(Screen*);
+    void render_sdl(Screen*);
+    void clear_sdl(Screen*);
+    void update_sdl(Screen*);
 
-void handle_type(Screen*, int, void(*)());
-void handle_key(Screen*, int, void(*)());
+    void handle_type(Screen*, int, void(*)());
+    void handle_key(Screen*, int, void(*)());
 
-void draw_quad(Screen*, Vec, Vec, Color);
-void draw_circ(Screen*, Vec, float, Color);
-void draw_box_solid(Screen*, Vec, Vec, Color);
-void draw_box(Screen*, Box*);
-SDL_Texture* gen_text(Screen*, const char*, TTF_Font*, Color);
-void draw_texture(Screen*, SDL_Texture*, Vec);
-void draw_text(Screen*, Msg*);
-void draw_arrow(Screen*, Vec, Vec, Color);
-void draw_mesh(Screen*, Vec, Color);
-void draw_fillrect(Screen*, Vec, Vec, Color);
+    void draw_quad(Screen*, Vec, Vec, Color);
+    void draw_circ(Screen*, Vec, float, Color);
+    void draw_box_solid(Screen*, Vec, Vec, Color);
+    void draw_box(Screen*, Box*);
+    SDL_Texture* gen_text(Screen*, const char*, TTF_Font*, Color);
+    void draw_texture(Screen*, SDL_Texture*, Vec);
+    void draw_text(Screen*, Msg*);
+    void draw_arrow(Screen*, Vec, Vec, Color);
+    void draw_mesh(Screen*, Vec, Color);
+    void draw_fillrect(Screen*, Vec, Vec, Color);
 
-Screen read_json(std::string);
+    Screen read_json(std::string);
 
-int eta_run(Screen*, void (*setup)(), void (*loop)());
+    int eta_run(Screen*, void (*setup)(), void (*loop)());
 
-void message_box(const Screen*, const char*, const char*);
-void exit_with_error_msg(const Screen*, const char*);
-const char* get_error_msgs();
-void error_msg(const char*);
-
+    void message_box(const Screen*, const char*, const char*);
+    void exit_with_error_msg(const Screen*, const char*);
+    const char* get_error_msgs();
+    void error_msg(const char*);
+}
 
 class Eta
 {
@@ -116,10 +118,12 @@ public:
     std::vector<TTF_Font*> fonts;
     int mouseX, mouseY;
     
+    float dt = 0.f;
+
     Eta(Screen m_sc) : sc(m_sc) {}
     ~Eta() {}
 
-    void UpdateFrame();
+    void ClearFrame();
     void DrawMsgs();
     void DrawBoxes();
     void Setup();
