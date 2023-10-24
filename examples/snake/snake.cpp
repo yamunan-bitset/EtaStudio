@@ -16,11 +16,24 @@ public:
 	Vec dir;
 } p;
 
+class Fruit {
+public:
+	Vec pos;
+	bool taken;
+	int iter;
+} f;
+
 void Eta::Setup()
 {
+	std::srand(std::time(NULL));
 	p.head = xy(100, 100);
 	p.length = 2;
 	p.dir = xy(0, 1);
+	int x = 50 * (std::rand() % 10);
+	int y = 50 * (std::rand() % 10);
+	f.pos = xy(x, y);
+	f.taken = false;
+	f.iter = 1;
 	itime = 0;
 }
 #include <stdio.h>
@@ -62,10 +75,20 @@ void Eta::Loop()
 		p.head.x = 900;
 	if (p.head.y < 0)
 		p.head.y = 900;
+	if (p.head.x == f.pos.x && p.head.y == f.pos.y)
+		f.taken = true;
 	EtaCore::draw_mesh(&sc, xy(50, 50), col(255, 0, 0, 255));
 	for (int i = 0; i < p.length; i++)
-	{
 		EtaCore::draw_fillrect(&sc, p.head, xy(p.head.x + 50 + 50*i*std::abs(p.dir.x), p.head.y + 50 + 50*i*std::abs(p.dir.y)), col(0, 255, 0, 255));
+	if (!f.taken)
+		EtaCore::draw_fillrect(&sc, f.pos, xy(f.pos.x + 50, f.pos.y + 50), col(255, 0, 0, 255));
+	else
+	{
+		f.taken = false;
+		int x = 50 * (std::rand() % 10);
+		int y = 50 * (std::rand() % 10);
+		f.pos = xy(x, y);
+		p.length++;
 	}
 }
 
