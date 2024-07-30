@@ -21,29 +21,29 @@ bool start_sim = false;
 // Setup
 void Eta::Setup()
 {
-	fonts.push_back(TTF_OpenFont("TheSansPlain.ttf", 20));
+	eta_fonts.push_back(TTF_OpenFont("TheSansPlain.ttf", 20));
 	Msg msg[2] = {
 	  {
 		.str = "Press h for Help",
 		.pos = xy(1130, 825),
-		.font = fonts[0],
+		.font = eta_fonts[0],
 		.c = col(255, 0, 0, 255)
 	  },
 	  {
 		.str = "Press Space to start sim",
 		.pos = xy(1100, 850),
-		.font = fonts[0],
+		.font = eta_fonts[0],
 		.c = col(0, 255, 0, 255)
 	  }
 	};
 	for (Msg u : msg)
-		msgs.push_back(u);
+		eta_msgs.push_back(u);
 	Box bx1 = {
 		.top = xy(1100, 700),
 		.bottom = xy(1300, 900),
 		.c = col(200, 100, 50, 255)
 	};
-	boxes.push_back(bx1);
+	eta_boxes.push_back(bx1);
 }
 
 // Handle

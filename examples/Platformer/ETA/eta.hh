@@ -110,9 +110,9 @@ class Eta
 public:
     Screen sc;
 
-    std::vector<Msg> msgs;
-    std::vector<Box> boxes;
-    std::vector<TTF_Font*> fonts;
+    std::vector<Msg> eta_msgs;
+    std::vector<Box> eta_boxes;
+    std::vector<TTF_Font*> eta_fonts;
     int mouseX, mouseY;
 
     float dt = 0.f;

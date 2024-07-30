@@ -72,7 +72,7 @@ typedef struct box {
     bool fill = false;
 } Box;
 
-namespace EtaCore 
+namespace EtaCore
 {
     void init_sdl();
     void close_sdl(Screen*);
@@ -110,11 +110,11 @@ class Eta
 public:
     Screen sc;
 
-    std::vector<Msg> msgs;
-    std::vector<Box> boxes;
-    std::vector<TTF_Font*> fonts;
+    std::vector<Msg> eta_msgs;
+    std::vector<Box> eta_boxes;
+    std::vector<TTF_Font*> eta_fonts;
     int mouseX, mouseY;
-    
+
     float dt = 0.f;
 
     Eta(Screen m_sc) : sc(m_sc) {}

@@ -187,13 +187,13 @@ void EtaCore::error_msg(const char* msg)
 
 void Eta::DrawMsgs()
 {
-    for (Msg u : msgs)
+    for (Msg u : eta_msgs)
         EtaCore::draw_text(&sc, &u);
 }
 
 void Eta::DrawBoxes()
 {
-    for (Box u : boxes)
+    for (Box u : eta_boxes)
         EtaCore::draw_box(&sc, &u);
 }
 
@@ -210,7 +210,7 @@ int Eta::Run()
     ImGuiSDL::Initialize(sc.impl, sc.dim.x, sc.dim.y);
     Setup();
     float LOW_LIMIT = 0.0167f;
-    float HIGH_LIMIT = 0.1f;  
+    float HIGH_LIMIT = 0.1f;
     float last_time = time(NULL);
     while (!sc.done)
     {

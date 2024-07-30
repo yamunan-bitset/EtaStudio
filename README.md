@@ -8,52 +8,59 @@ First install SDL2. Then copy the directory `src` into your project directory an
 
 ### Example - Basic window
 ```
-#include <ETA/eta.hh>
 
-Screen sc = {
-    .title = "New Basic Window",
-    .dim = xy(1000, 800),
-    .bg = col(100, 0, 100, 255)
+Screen sc = { // create screen
+	.title = "New Basic Window",
+	.dim = xy(1000, 800),
+	.bg = col(20, 0, 50, 255)
 };
 
-Box bx1 = {
-    .top = xy(800, 200),
-    .bottom = xy(900, 400),
-    .c = col(255, 0, 0, 255),
-    .fill = true
+Box bx1 = { // create a box
+	.top = xy(800, 200),
+	.bottom = xy(900, 400),
+	.c = col(255, 0, 0, 255),
+	.fill = true
+};
+
+Msg msg1 = { // create a message box
+	.str = "Hello, World!",
+	.pos = xy(500, 200),
+	.c = col(255, 255, 255, 255)
 };
 
 void Eta::Setup()
 {
-    // Setup code goes here
-    this->boxes.push_back(bx1) // Push the box bx1 into the stack and it will automatically be rendered. 
+	// Setup code goes here
+	msg1.font = TTF_OpenFont("TheSansPlain.ttf", 20); // Add font to message box
+	eta_boxes.push_back(bx1); // Push the box bx1 into the stack and it will automatically be rendered. 
+	eta_msgs.push_back(msg1); // Same with message boxes.
 }
 
 void Eta::Handle()
 {
-    while (SDL_PollEvent(&sc.event))
-    {
-        switch (sc.event.type)
-        {
-            case SDL_QUIT: sc.done = true;
-        }
-    }
+	while (SDL_PollEvent(&sc.event))
+	{
+		switch (sc.event.type)
+		{
+		case SDL_QUIT: sc.done = true;
+		}
+	}
 }
 
 void Eta::Loop()
 {
-    // Loop code goes here
-    ClearFrame();
-    // to draw a rectangle, call the draw_fillrect function from the EtaCore library.
-    EtaCore::draw_fillrect(&sc, xy(100, 200), xy(200, 300), col(255, 255, 0, 255));
+	// Loop code goes here
+	ClearFrame();
+	// to draw a rectangle, call the draw_fillrect function from the EtaCore library.
+	EtaCore::draw_fillrect(&sc, xy(100, 200), xy(200, 300), col(255, 255, 0, 255));
 }
 
 int main()
 {
-    Eta eta(sc);
-    return eta.Run();
+	Eta eta(sc);
+	return eta.Run();
 }
 ```
 
 ### Features 
-EtaStudio includes a few, yet sl
+EtaStudio includes a few, yet simple features. The most phenomenal is the Box and Msg vectors. These are arrays, which would automatically render in the mainloop, without needing any effort. 
