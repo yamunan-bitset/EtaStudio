@@ -8,19 +8,22 @@ Screen sc = {
 Box p1 = {
 	.top = xy(100, 600),
 	.bottom = xy(400, 620),
-	.c = col(0, 0, 255, 255)
+	.c = col(0, 0, 255, 255),
+	.fill = true
 };
 
 Box p2 = {
 	.top = xy(600, 600),
 	.bottom = xy(900, 620),
-	.c = col(0, 0, 255, 255)
+	.c = col(0, 0, 255, 255),
+	.fill = true
 };
 
 Box p3 = {
 	.top = xy(300, 100),
 	.bottom = xy(700, 120),
-	.c = col(0, 0, 255, 255)
+	.c = col(0, 0, 255, 255),
+	.fill = true
 };
 
 class Player

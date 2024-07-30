@@ -69,7 +69,7 @@ typedef struct box {
     Tex* texs;
     Vec top, bottom;
     Color c;
-    bool fill = true;
+    bool fill = false;
 } Box;
 
 namespace EtaCore
