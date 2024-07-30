@@ -210,7 +210,7 @@ int Eta::Run()
     ImGuiSDL::Initialize(sc.impl, sc.dim.x, sc.dim.y);
     Setup();
     float LOW_LIMIT = 0.0167f;
-    float HIGH_LIMIT = 0.1f;  
+    float HIGH_LIMIT = 0.1f;
     float last_time = time(NULL);
     while (!sc.done)
     {

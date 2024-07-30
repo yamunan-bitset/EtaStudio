@@ -2,6 +2,8 @@
 #include "../../src/eta.hh"
 #include "../../src/imgui_sdl.hh"
 
+using namespace EtaCore;
+
 Screen sc = { // = read_json("window.json");
 	.title = "3-Body Simulator",
 	.dim = xy(1400, 900),
@@ -12,7 +14,7 @@ Screen sc = { // = read_json("window.json");
 
 // 3 bodies:
 Vec b1 = { 0, 0 }, b2 = { 0, 0 }, b3 = { 0, 0 };
-Vecf vel1 = { 0.f, 0.f }, vel2 = { 0.f, 0.f }, vel3 = { 0.f, 0.f };
+Vec vel1 = { 0.f, 0.f }, vel2 = { 0.f, 0.f }, vel3 = { 0.f, 0.f };
 float m1 = 1.f, m2 = 1.f, m3 = 1.f;
 bool start_sim = false;
 
@@ -101,7 +103,7 @@ void Eta::Handle()
 // Loop
 void Eta::Loop()
 {
-	UpdateFrame();
+	ClearFrame();
 	if (start_sim)
 	{
 		b1.x += 0.2*vel1.x; b2.x += 0.2*vel2.x; b3.x += 0.2*vel3.x;
