@@ -4,7 +4,7 @@
 EtaStudio provides a simple and quick framework to make games and also GUI applications. It is very light weight, with the main selling point being that it requires less effort when compared to programming in barebones SDL2 and also an easy approach to integrating ImGui. 
 
 ### How to setup an EtaStudio Project
-First install SDL2. Then copy the directory `src` into your project directory and rename it to `ETA`. In your main source file, include `"Eta/eta.hh"`. 
+First install SDL2 and ImGui. Then copy the directory `src` into your project directory and rename it to `ETA`. In your main source file, include `"Eta/eta.hh"`. Note that EtaStudio is written in C++20. 
 
 ### Example - Basic window
 ```
