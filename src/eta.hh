@@ -72,6 +72,22 @@ typedef struct box {
     bool fill = false;
 } Box;
 
+typedef struct static_entity {
+    Vec pos;
+    int sizex, sizey;
+    Color c;
+} StaticEntity;
+
+typedef struct dynamic_entity {
+    float vel = 0.25;
+    int size;
+    Vec dir;
+    Vec pos;
+    bool move_right, move_left, move_down, move_up, is_jump;
+    int jump_count = 10;
+    Color c;
+} DynamicEntity;
+
 namespace EtaCore
 {
     void init_sdl();
@@ -94,6 +110,8 @@ namespace EtaCore
     void draw_arrow(Screen*, Vec, Vec, Color);
     void draw_mesh(Screen*, Vec, Color);
     void draw_fillrect(Screen*, Vec, Vec, Color);
+    void draw_static(Screen*, StaticEntity);
+    void draw_dynamic(Screen*, DynamicEntity);
 
     Screen read_json(std::string);
 
@@ -113,6 +131,8 @@ public:
     std::vector<Msg> eta_msgs;
     std::vector<Box> eta_boxes;
     std::vector<TTF_Font*> eta_fonts;
+    std::vector<StaticEntity> eta_static;
+    std::vector<DynamicEntity> eta_dynamic;
     int mouseX, mouseY;
 
     float dt = 0.f;
@@ -123,6 +143,7 @@ public:
     void ClearFrame();
     void DrawMsgs();
     void DrawBoxes();
+    void DrawEntities();
     void Setup();
     void Handle();
     void Loop();

@@ -129,6 +129,16 @@ void EtaCore::draw_fillrect(Screen* sc, Vec a, Vec b, Color c)
     boxRGBA(sc->impl, a.x, a.y, b.x, b.y, c.r, c.g, c.b, c.a);
 }
 
+void EtaCore::draw_static(Screen* sc, StaticEntity se)
+{
+    EtaCore::draw_fillrect(sc, se.pos, xy(se.pos.x + se.sizex, se.pos.y + se.sizey), se.c);
+}
+
+void EtaCore::draw_dynamic(Screen* sc, DynamicEntity de)
+{
+    EtaCore::draw_fillrect(sc, de.pos, xy(de.pos.x + de.size, de.pos.y + de.size), de.c);
+}
+
 Screen EtaCore::read_json(std::string file)
 {
     std::ifstream f(file);
@@ -195,6 +205,14 @@ void Eta::DrawBoxes()
 {
     for (Box u : eta_boxes)
         EtaCore::draw_box(&sc, &u);
+}
+
+void Eta::DrawEntities()
+{
+    for (StaticEntity u : eta_static)
+        EtaCore::draw_static(&sc, u);
+    for (DynamicEntity u : eta_dynamic)
+        EtaCore::draw_dynamic(&sc, u);
 }
 
 void Eta::ClearFrame()
