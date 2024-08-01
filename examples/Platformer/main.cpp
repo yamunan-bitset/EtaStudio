@@ -2,7 +2,7 @@
 
 Screen sc = {
 	.title = "Basic",
-	.dim = xy(1000, 700)
+	.dim = xy(1200, 800)
 };
 
 Box p1 = {
@@ -48,11 +48,9 @@ DynamicEntity player = {
 	.vel = 0.25,
 	.size = 32,
 	.pos = xy(0, sc.dim.y - player.size),
-	.jump_count = 10,
+	.jump_count = 100,
 	.c = col(255, 0, 0, 255)
 };
-
-bool keydown = false;
 
 void Eta::Setup() 
 {
@@ -83,7 +81,6 @@ void Eta::Handle()
 			case SDLK_LEFT: player.move_left = false; break;
 			case SDLK_RIGHT: player.move_right = false; break;
 			case SDLK_DOWN: player.move_down = false; break; 
-			case SDLK_SPACE: player.move_up = false; break;
 			default: break;
 			} break;
 		default: break;
@@ -91,40 +88,32 @@ void Eta::Handle()
 	}
 };
 
+int i = 0;
+
 void Eta::Loop() 
 {
-	if (player.move_right) player.dir.x += 1;
-	if (player.move_left) player.dir.x -= 1;
-	if (player.move_down) player.dir.y += 1;
-	if (player.move_up) {  player.is_jump = true; }
-	
+	i++;
+	if (player.move_right) player.pos.x += player.vel * dt;
+	if (player.move_left) player.pos.x -= player.vel * dt;
+	if (player.move_down) player.pos.y += player.vel * dt;
+
+	if (player.move_up) { player.jump_count = -20;  player.is_jump = true; player.move_up = false; }
+
 	if (player.is_jump)
 	{
-		if (player.jump_count >= -10)
-		{
-			int neg = 1;
-			if (player.jump_count < 0) neg = -1;
-			player.pos.y -= (player.jump_count * player.jump_count) * 2 * neg * player.vel;
-			player.jump_count -= 1;
-		}
-		else 
-		{ 
-			player.is_jump = false; 
-			player.jump_count = 10; 
-		}
+		if (i % 10 == 0) player.jump_count += 1;
+		player.pos.y += player.jump_count * dt * 0.1;
 	}
+	else player.jump_count = 0;
 
-	player.pos = xy(player.pos.x + player.dir.x * player.vel, player.pos.y + player.dir.y * player.vel);
-	player.dir = xy(0, 0);
-
-	if (player.pos.x > sc.dim.x - 32) player.pos.x = sc.dim.x - 32;
+	if (player.pos.x > sc.dim.x - 32) { player.pos.x = sc.dim.x - 32; }
 	if (player.pos.x < 0) player.pos.x = 0;
-	if (player.pos.y > sc.dim.y - 32) player.pos.y = sc.dim.y - 32;
+	if (player.pos.y > sc.dim.y - 32) { player.pos.y = sc.dim.y - 32; player.is_jump = false; }
 	if (player.pos.y < 0) { player.pos.y = 0; player.move_up = false; }
 
 	ClearFrame();
 	EtaCore::draw_fillrect(&sc, player.pos, xy(player.pos.x + 32, player.pos.y + 32), col(255, 0, 0, 255));
-};
+}
 
 int main()
 {

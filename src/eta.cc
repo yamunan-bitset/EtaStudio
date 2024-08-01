@@ -227,19 +227,14 @@ int Eta::Run()
     ImGui::CreateContext();
     ImGuiSDL::Initialize(sc.impl, sc.dim.x, sc.dim.y);
     Setup();
-    float LOW_LIMIT = 0.0167f;
-    float HIGH_LIMIT = 0.1f;
-    float last_time = time(NULL);
+    dt = 0;
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
     while (!sc.done)
     {
-        float current_time = time(NULL);
-        dt = (current_time - last_time) / 1000.0f;
-        if (dt < LOW_LIMIT)
-            dt = LOW_LIMIT;
-        else if (dt > HIGH_LIMIT)
-            dt = HIGH_LIMIT;
-        last_time = current_time;
-        //ClearFrame();
+        LAST = NOW;
+        NOW = SDL_GetPerformanceCounter();
+        dt = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
         const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
         int wheel = 0;
         wheel = sc.event.wheel.y;
