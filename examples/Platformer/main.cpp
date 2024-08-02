@@ -5,27 +5,27 @@ Screen sc = {
 	.dim = xy(1200, 800)
 };
 
-Box p1 = {
-	.top = xy(100, 600),
-	.bottom = xy(400, 620),
-	.c = col(0, 0, 255, 255),
-	.fill = true
+Box platforms[3] = {
+	{
+		.top = xy(100, 600),
+		.bottom = xy(400, 620),
+		.c = col(0, 0, 255, 255),
+		.fill = true
+	},
+	{
+		.top = xy(800, 600),
+		.bottom = xy(1100, 620),
+		.c = col(0, 0, 255, 255),
+		.fill = true
+	},
+	{
+		.top = xy(300, 450),
+		.bottom = xy(900, 470),
+		.c = col(0, 0, 255, 255),
+		.fill = true
+	}
 };
-
-Box p2 = {
-	.top = xy(800, 600),
-	.bottom = xy(1100, 620),
-	.c = col(0, 0, 255, 255),
-	.fill = true
-};
-
-Box p3 = {
-	.top = xy(300, 450),
-	.bottom = xy(900, 470),
-	.c = col(0, 0, 255, 255),
-	.fill = true
-};
-
+/*
 StaticEntity platforms[3] = {
 	{
 		.pos = xy(300, 100),
@@ -42,21 +42,20 @@ StaticEntity platforms[3] = {
 		.sizex = 300,
 		.sizey = 20
 	}
-};
+};*/
 
 DynamicEntity player = {
-	.vel = 0.25,
+	.vel = 0.5,
 	.size = 32,
 	.pos = xy(0, sc.dim.y - player.size),
-	.jump_count = 100,
+	.jump_count = -20,
 	.c = col(255, 0, 0, 255)
 };
 
 void Eta::Setup() 
 {
-	eta_boxes.push_back(p1);
-	eta_boxes.push_back(p2);
-	eta_boxes.push_back(p3);
+	for (Box platform : platforms)
+		eta_boxes.push_back(platform);
 };
 
 void Eta::Handle() 
@@ -89,23 +88,54 @@ void Eta::Handle()
 };
 
 int i = 0;
-
+bool on_platform1 = false;
+bool on_platform2 = false;
+bool falling = false;
 void Eta::Loop() 
 {
 	i++;
+	// key events update position
 	if (player.move_right) player.pos.x += player.vel * dt;
 	if (player.move_left) player.pos.x -= player.vel * dt;
-	if (player.move_down) player.pos.y += player.vel * dt;
-
+	if (player.move_down) { on_platform1 = false; on_platform2 = false;  player.is_jump = false; }
 	if (player.move_up) { player.jump_count = -20;  player.is_jump = true; player.move_up = false; }
 
+	// player jump
 	if (player.is_jump)
 	{
 		if (i % 10 == 0) player.jump_count += 1;
 		player.pos.y += player.jump_count * dt * 0.1;
 	}
-	else player.jump_count = 0;
 
+	// player and platform
+	if ((player.is_jump && player.jump_count > 0) || falling)
+	{
+		if ((564 < player.pos.y && player.pos.y < 570) && ((player.pos.x > 100 && player.pos.x < 400) || (player.pos.x > 800 && player.pos.x < 1100)))
+		{
+			player.pos.y = 568;
+			player.is_jump = false;
+			on_platform1 = true;
+			on_platform2 = false;
+			falling = false;
+		}
+		else if ((416 < player.pos.y && player.pos.y < 420) && (player.pos.x > 300 && player.pos.x < 900))
+		{
+			player.pos.y = 418;
+			player.is_jump = false;
+			on_platform2 = true;
+			on_platform1 = false;
+			falling = false;
+		}
+	}
+	if (on_platform1 && !((player.pos.x > 100 && player.pos.x < 400) || (player.pos.x > 800 && player.pos.x < 1100))) on_platform1 = false;
+	if (on_platform2 && !(player.pos.x > 300 && player.pos.x < 900)) on_platform2 = false;
+	if (!on_platform1 && !on_platform2 && !player.is_jump)
+	{
+		player.pos.y += 5; // add gravity if not on a platform
+		falling = true;
+	}
+
+	// clamp player to window
 	if (player.pos.x > sc.dim.x - 32) { player.pos.x = sc.dim.x - 32; }
 	if (player.pos.x < 0) player.pos.x = 0;
 	if (player.pos.y > sc.dim.y - 32) { player.pos.y = sc.dim.y - 32; player.is_jump = false; }
