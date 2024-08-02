@@ -147,6 +147,7 @@ public:
     void Setup();
     void Handle();
     void Loop();
+    void Render();
     int Run();
 };
 

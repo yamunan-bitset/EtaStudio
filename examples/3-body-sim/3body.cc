@@ -100,10 +100,9 @@ void Eta::Handle()
 	}
 }
 
-// Loop
-void Eta::Loop()
+// Loop & Render
+void Eta::Render()
 {
-	ClearFrame();
 	if (start_sim)
 	{
 		b1.x += 0.2*vel1.x; b2.x += 0.2*vel2.x; b3.x += 0.2*vel3.x;

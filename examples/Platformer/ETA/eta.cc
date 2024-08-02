@@ -249,8 +249,10 @@ int Eta::Run()
         ImGui::NewFrame();
         Handle();
         Loop();
+        ClearFrame();
         DrawBoxes();
         DrawMsgs();
+        Render();
         ImGui::Render();
         ImGuiSDL::Render(ImGui::GetDrawData());
         EtaCore::update_sdl(&sc);

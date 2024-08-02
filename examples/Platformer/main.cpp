@@ -13,15 +13,15 @@ Box p1 = {
 };
 
 Box p2 = {
-	.top = xy(600, 600),
-	.bottom = xy(900, 620),
+	.top = xy(800, 600),
+	.bottom = xy(1100, 620),
 	.c = col(0, 0, 255, 255),
 	.fill = true
 };
 
 Box p3 = {
-	.top = xy(300, 100),
-	.bottom = xy(700, 120),
+	.top = xy(300, 450),
+	.bottom = xy(900, 470),
 	.c = col(0, 0, 255, 255),
 	.fill = true
 };
@@ -72,7 +72,6 @@ void Eta::Handle()
 			case SDLK_LEFT: player.move_left = true; break;
 			case SDLK_RIGHT: player.move_right = true; break;
 			case SDLK_DOWN: player.move_down = true; break; 
-			case SDLK_SPACE: player.move_up = true; break; 
 			default: break;
 			} break;
 		case SDL_KEYUP: 
@@ -81,6 +80,7 @@ void Eta::Handle()
 			case SDLK_LEFT: player.move_left = false; break;
 			case SDLK_RIGHT: player.move_right = false; break;
 			case SDLK_DOWN: player.move_down = false; break; 
+			case SDLK_SPACE: player.move_up = true; break;
 			default: break;
 			} break;
 		default: break;
@@ -110,8 +110,10 @@ void Eta::Loop()
 	if (player.pos.x < 0) player.pos.x = 0;
 	if (player.pos.y > sc.dim.y - 32) { player.pos.y = sc.dim.y - 32; player.is_jump = false; }
 	if (player.pos.y < 0) { player.pos.y = 0; player.move_up = false; }
+}
 
-	ClearFrame();
+void Eta::Render()
+{
 	EtaCore::draw_fillrect(&sc, player.pos, xy(player.pos.x + 32, player.pos.y + 32), col(255, 0, 0, 255));
 }
 

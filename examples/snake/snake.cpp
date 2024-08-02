@@ -60,7 +60,6 @@ void Eta::Handle()
 
 void Eta::Loop()
 {
-	ClearFrame();
 	itime++;
 	if (itime % 100 == 0)
 	{
@@ -77,9 +76,13 @@ void Eta::Loop()
 		p.head.y = 900;
 	if (p.head.x == f.pos.x && p.head.y == f.pos.y)
 		f.taken = true;
+}
+
+void Eta::Render()
+{
 	EtaCore::draw_mesh(&sc, xy(50, 50), col(255, 0, 0, 255));
 	for (int i = 0; i < p.length; i++)
-		EtaCore::draw_fillrect(&sc, p.head, xy(p.head.x + 50 + 50*i*std::abs(p.dir.x), p.head.y + 50 + 50*i*std::abs(p.dir.y)), col(0, 255, 0, 255));
+		EtaCore::draw_fillrect(&sc, p.head, xy(p.head.x + 50 + 50 * i * std::abs(p.dir.x), p.head.y + 50 + 50 * i * std::abs(p.dir.y)), col(0, 255, 0, 255));
 	if (!f.taken)
 		EtaCore::draw_fillrect(&sc, f.pos, xy(f.pos.x + 50, f.pos.y + 50), col(255, 0, 0, 255));
 	else
