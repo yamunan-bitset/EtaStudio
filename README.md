@@ -51,7 +51,11 @@ void Eta::Handle()
 void Eta::Loop()
 {
 	// Loop code goes here
-	ClearFrame();
+}
+
+void Eta::Render()
+{
+	// Render code goes here
 	// to draw a rectangle, call the draw_fillrect function from the EtaCore library.
 	EtaCore::draw_fillrect(&sc, xy(100, 200), xy(200, 300), col(255, 255, 0, 255));
 }
