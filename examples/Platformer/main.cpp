@@ -25,24 +25,6 @@ Box platforms[3] = {
 		.fill = true
 	}
 };
-/*
-StaticEntity platforms[3] = {
-	{
-		.pos = xy(300, 100),
-		.sizex = 400,
-		.sizey = 20
-	},
-	{
-		.pos = xy(100, 600),
-		.sizex = 300,
-		.sizey = 20
-	}, 
-	{
-		.pos = xy(600, 600),
-		.sizex = 300,
-		.sizey = 20
-	}
-};*/
 
 DynamicEntity player = {
 	.vel = 0.5,
@@ -91,14 +73,25 @@ int i = 0;
 bool on_platform1 = false;
 bool on_platform2 = false;
 bool falling = false;
+bool falling_from2 = false;
 void Eta::Loop() 
 {
 	i++;
 	// key events update position
 	if (player.move_right) player.pos.x += player.vel * dt;
 	if (player.move_left) player.pos.x -= player.vel * dt;
-	if (player.move_down) { on_platform1 = false; on_platform2 = false;  player.is_jump = false; }
-	if (player.move_up) { player.jump_count = -20;  player.is_jump = true; player.move_up = false; }
+	if (player.move_down) 
+	{ 
+		on_platform1 = false; 
+		on_platform2 = false;  
+		player.is_jump = false; 
+	}
+	if (player.move_up) 
+	{
+		player.jump_count = -20;  
+		player.is_jump = true; 
+		player.move_up = false; 
+	}
 
 	// player jump
 	if (player.is_jump)
@@ -131,8 +124,8 @@ void Eta::Loop()
 	if (on_platform2 && !(player.pos.x > 300 && player.pos.x < 900)) on_platform2 = false;
 	if (!on_platform1 && !on_platform2 && !player.is_jump)
 	{
-		player.pos.y += 5; // add gravity if not on a platform
 		falling = true;
+		player.pos.y += 5; // add gravity if not on a platform
 	}
 
 	// clamp player to window

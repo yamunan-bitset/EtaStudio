@@ -26,13 +26,14 @@ Box bx1 = { // create a box
 Msg msg1 = { // create a message box
 	.str = "Hello, World!",
 	.pos = xy(500, 200),
+	.font = "TheSansPlain.ttf",
+	.size = 20,
 	.c = col(255, 255, 255, 255)
 };
 
 void Eta::Setup()
 {
 	// Setup code goes here
-	msg1.font = TTF_OpenFont("TheSansPlain.ttf", 20); // Add font to message box
 	eta_boxes.push_back(bx1); // Push the box bx1 into the stack and it will automatically be rendered. 
 	eta_msgs.push_back(msg1); // Same with message boxes.
 }

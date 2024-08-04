@@ -54,7 +54,8 @@ typedef struct keyboard {
 typedef struct msgs {
     const char* str;
     Vec pos;
-    TTF_Font* font;
+    char* font;
+    int size;
     Color c;
 } Msg;
 
@@ -71,12 +72,6 @@ typedef struct box {
     Color c;
     bool fill = false;
 } Box;
-
-typedef struct static_entity {
-    Vec pos;
-    int sizex, sizey;
-    Color c;
-} StaticEntity;
 
 typedef struct dynamic_entity {
     float vel = 0.25;

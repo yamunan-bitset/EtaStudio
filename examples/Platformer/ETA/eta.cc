@@ -103,7 +103,7 @@ void EtaCore::draw_texture(Screen* sc, SDL_Texture* tex, Vec a)
 
 void EtaCore::draw_text(Screen* sc, Msg* msg)
 {
-    SDL_Texture* tex = EtaCore::gen_text(sc, msg->str, msg->font, msg->c);
+    SDL_Texture* tex = EtaCore::gen_text(sc, msg->str, TTF_OpenFont(msg->font, msg->size), msg->c);
     EtaCore::draw_texture(sc, tex, msg->pos);
 }
 
@@ -127,11 +127,6 @@ void EtaCore::draw_mesh(Screen* sc, Vec interval, Color c)
 void EtaCore::draw_fillrect(Screen* sc, Vec a, Vec b, Color c)
 {
     boxRGBA(sc->impl, a.x, a.y, b.x, b.y, c.r, c.g, c.b, c.a);
-}
-
-void EtaCore::draw_static(Screen* sc, StaticEntity se)
-{
-    EtaCore::draw_fillrect(sc, se.pos, xy(se.pos.x + se.sizex, se.pos.y + se.sizey), se.c);
 }
 
 void EtaCore::draw_dynamic(Screen* sc, DynamicEntity de)
@@ -209,8 +204,6 @@ void Eta::DrawBoxes()
 
 void Eta::DrawEntities()
 {
-    for (StaticEntity u : eta_static)
-        EtaCore::draw_static(&sc, u);
     for (DynamicEntity u : eta_dynamic)
         EtaCore::draw_dynamic(&sc, u);
 }

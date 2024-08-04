@@ -18,31 +18,34 @@ Vec vel1 = { 0.f, 0.f }, vel2 = { 0.f, 0.f }, vel3 = { 0.f, 0.f };
 float m1 = 1.f, m2 = 1.f, m3 = 1.f;
 bool start_sim = false;
 
-// Setup
-void Eta::Setup()
-{
-	eta_fonts.push_back(TTF_OpenFont("TheSansPlain.ttf", 20));
-	Msg msg[2] = {
+Msg msg[2] = {
 	  {
 		.str = "Press h for Help",
 		.pos = xy(1130, 825),
-		.font = eta_fonts[0],
+		.font = "TheSansPlain.ttf",
+		.size = 20,
 		.c = col(255, 0, 0, 255)
 	  },
 	  {
 		.str = "Press Space to start sim",
 		.pos = xy(1100, 850),
-		.font = eta_fonts[0],
+		.font = "TheSansPlain.ttf",
+		.size = 20,
 		.c = col(0, 255, 0, 255)
 	  }
-	};
-	for (Msg u : msg)
-		eta_msgs.push_back(u);
-	Box bx1 = {
+};
+
+Box bx1 = {
 		.top = xy(1100, 700),
 		.bottom = xy(1300, 900),
 		.c = col(200, 100, 50, 255)
-	};
+};
+
+// Setup
+void Eta::Setup()
+{
+	for (Msg u : msg)
+		eta_msgs.push_back(u);
 	eta_boxes.push_back(bx1);
 }
 
