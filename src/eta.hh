@@ -105,7 +105,6 @@ namespace EtaCore
     void draw_arrow(Screen*, Vec, Vec, Color);
     void draw_mesh(Screen*, Vec, Color);
     void draw_fillrect(Screen*, Vec, Vec, Color);
-    void draw_static(Screen*, StaticEntity);
     void draw_dynamic(Screen*, DynamicEntity);
 
     Screen read_json(std::string);
@@ -126,7 +125,6 @@ public:
     std::vector<Msg> eta_msgs;
     std::vector<Box> eta_boxes;
     std::vector<TTF_Font*> eta_fonts;
-    std::vector<StaticEntity> eta_static;
     std::vector<DynamicEntity> eta_dynamic;
     int mouseX, mouseY;
 

@@ -9,6 +9,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #ifdef _WIN32
 #include <imgui.h>
 #elif defined(__linux__)
@@ -25,6 +26,11 @@
 
 typedef struct vec {
     float x, y;
+    bool operator==(const char arr[2])
+    {
+        if ((x == arr[0]) && (y == arr[1])) return true;
+        return false;
+    }
 } Vec;
 
 typedef struct color {
@@ -36,8 +42,8 @@ typedef struct color {
 
 typedef struct screen {
     std::string title;
-    SDL_Renderer* impl;
     SDL_Window* window;
+    SDL_Renderer* impl;
     Vec dim = xy(800, 800);
     Vec offset;
     Color bg = { 0, 0, 0, 255 };
@@ -60,8 +66,8 @@ typedef struct msgs {
 } Msg;
 
 typedef struct tex {
-    SDL_Texture* tex;
     SDL_Surface* sur;
+    SDL_Texture* tex;
     Vec pos;
 } Tex;
 
@@ -74,13 +80,30 @@ typedef struct box {
 } Box;
 
 typedef struct dynamic_entity {
+    dynamic_entity(Vec m_pos, Vec m_size, const char* m_image=NULL, Color m_c=col(255, 255, 255, 255), float m_vel = 0.25);
+    Screen* sc;
     float vel = 0.25;
-    int size;
+    Vec size;
     Vec dir;
     Vec pos;
     bool move_right, move_left, move_down, move_up, is_jump;
     int jump_count = 10;
     Color c;
+    const char* image;
+
+    void Setup(Screen*);
+
+    void SetVel(float nvel) { vel = nvel; }
+    void SetPos(Vec npos) { pos = npos; }
+    void SetDir(Vec ndir) { dir = ndir; }
+    void SetCol(Color nc) { c = nc; }
+    void SetImg(const char* nimage) { image = nimage; }
+
+    void Draw();
+private:
+    SDL_Surface* sur;
+    SDL_Texture* tex;
+    SDL_Rect rect;
 } DynamicEntity;
 
 namespace EtaCore
@@ -101,12 +124,12 @@ namespace EtaCore
     void draw_box(Screen*, Box*);
     SDL_Texture* gen_text(Screen*, const char*, TTF_Font*, Color);
     void draw_texture(Screen*, SDL_Texture*, Vec);
+    //void draw_texture(Screen*, Tex, Vec, Vec);
     void draw_text(Screen*, Msg*);
     void draw_arrow(Screen*, Vec, Vec, Color);
     void draw_mesh(Screen*, Vec, Color);
     void draw_fillrect(Screen*, Vec, Vec, Color);
-    void draw_static(Screen*, StaticEntity);
-    void draw_dynamic(Screen*, DynamicEntity);
+    //void draw_dynamic(Screen*, DynamicEntity);
 
     Screen read_json(std::string);
 
@@ -126,7 +149,6 @@ public:
     std::vector<Msg> eta_msgs;
     std::vector<Box> eta_boxes;
     std::vector<TTF_Font*> eta_fonts;
-    std::vector<StaticEntity> eta_static;
     std::vector<DynamicEntity> eta_dynamic;
     int mouseX, mouseY;
 
@@ -138,8 +160,8 @@ public:
     void ClearFrame();
     void DrawMsgs();
     void DrawBoxes();
-    void DrawEntities();
     void Setup();
+    //void SetupEntities();
     void Handle();
     void Loop();
     void Render();

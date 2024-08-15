@@ -26,19 +26,15 @@ Box platforms[3] = {
 	}
 };
 
-DynamicEntity player = {
-	.vel = 0.5,
-	.size = 32,
-	.pos = xy(0, sc.dim.y - player.size),
-	.jump_count = -20,
-	.c = col(255, 0, 0, 255)
-};
+DynamicEntity player(xy(0, sc.dim.y - player.size.y), xy(32, 32), "sprite.png", col(255, 255, 255, 255), 0.5);
 
 void Eta::Setup() 
 {
+	player.Setup(&sc);
 	for (Box platform : platforms)
 		eta_boxes.push_back(platform);
-};
+	eta_dynamic.push_back(player);
+}
 
 void Eta::Handle() 
 {
@@ -137,11 +133,79 @@ void Eta::Loop()
 
 void Eta::Render()
 {
-	EtaCore::draw_fillrect(&sc, player.pos, xy(player.pos.x + 32, player.pos.y + 32), col(255, 0, 0, 255));
+	//player.tex.pos = player.pos;
+	//EtaCore::draw_dynamic(&sc, player);
+	//SDL_RenderCopy(sc.impl, lettuce_tex, NULL, &bRect);
+	player.Draw();
 }
 
 int main()
 {
 	Eta eta(sc);
 	return eta.Run();
-}
+}/*
+
+
+#include <stdio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
+#define WIDTH 800
+#define HEIGHT 600
+#define IMG_PATH "../sprite.png"
+#include <iostream>
+
+int main(int argc, char* argv[]) {
+
+	printf(SDL_GetBasePath(), "%s");
+	// variable declarations
+	SDL_Window* win = NULL;
+	SDL_Renderer* renderer = NULL;
+	SDL_Texture* img = NULL;
+	int w, h; // texture width & height
+
+	// Initialize SDL.
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		return 1;
+
+	// create the window and renderer
+	// note that the renderer is accelerated
+	win = SDL_CreateWindow("Image Loading", 100, 100, WIDTH, HEIGHT, 0);
+	renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+
+	SDL_Surface* lettuce_sur = IMG_Load("sprite.png");
+	if (lettuce_sur == NULL) {
+		std::cout << "Error loading image: " << IMG_GetError();
+		return 5;
+	}
+	SDL_Texture* lettuce_tex = SDL_CreateTextureFromSurface(renderer, lettuce_sur);
+	if (lettuce_tex == NULL) {
+		std::cout << "Error creating texture";
+		return 6;
+	}
+
+	SDL_FreeSurface(lettuce_sur);
+
+	// main loop
+	while (1) {
+
+		// event handling
+		SDL_Event e;
+		if (SDL_PollEvent(&e)) {
+			if (e.type == SDL_QUIT)
+				break;
+			else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_ESCAPE)
+				break;
+		}
+
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, lettuce_tex, NULL, NULL);
+		SDL_RenderPresent(renderer);
+	}
+
+	SDL_DestroyTexture(img);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(win);
+
+	return 0;
+}*/
