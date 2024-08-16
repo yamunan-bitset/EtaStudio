@@ -161,7 +161,6 @@ public:
     void DrawMsgs();
     void DrawBoxes();
     void Setup();
-    //void SetupEntities();
     void Handle();
     void Loop();
     void Render();

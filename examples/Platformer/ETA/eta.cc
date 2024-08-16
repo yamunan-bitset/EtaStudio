@@ -226,7 +226,6 @@ void dynamic_entity::Draw()
     else
     {
         rect = { (int)pos.x, (int)pos.y, (int)size.x, (int)size.y };
-        if (tex == NULL) SDL_GetError();
         SDL_RenderCopy(sc->impl, tex, NULL, &rect);
     }
 }

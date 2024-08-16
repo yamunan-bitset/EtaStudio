@@ -8,6 +8,10 @@ void EtaCore::init_sdl()
     SDL_SetHint(SDL_HINT_VIDEO_X11_XRANDR, "1");
     SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
     TTF_Init();
+    IMG_Init(IMG_INIT_JPG);
+    IMG_Init(IMG_INIT_PNG);
+    IMG_Init(IMG_INIT_TIF);
+    IMG_Init(IMG_INIT_WEBP);
 }
 
 void EtaCore::close_sdl(Screen* sc)
@@ -15,6 +19,7 @@ void EtaCore::close_sdl(Screen* sc)
     SDL_DestroyWindow(sc->window);
     TTF_Quit();
     SDL_Quit();
+    IMG_Quit();
 }
 
 void EtaCore::setup_screen(Screen* sc)
@@ -92,11 +97,11 @@ SDL_Texture* EtaCore::gen_text(Screen* sc, const char* text, TTF_Font* font, Col
     return tex;
 }
 
-void EtaCore::draw_texture(Screen* sc, SDL_Texture* tex, Vec a)
+void EtaCore::draw_texture(Screen* sc, SDL_Texture* tex, Vec pos)
 {
     SDL_Rect rect;
-    rect.x = a.x;
-    rect.y = a.y;
+    rect.x = pos.x;
+    rect.y = pos.y;
     SDL_QueryTexture(tex, NULL, NULL, &rect.w, &rect.h);
     SDL_RenderCopy(sc->impl, tex, NULL, &rect);
 }
@@ -128,11 +133,17 @@ void EtaCore::draw_fillrect(Screen* sc, Vec a, Vec b, Color c)
 {
     boxRGBA(sc->impl, a.x, a.y, b.x, b.y, c.r, c.g, c.b, c.a);
 }
-
+/*
 void EtaCore::draw_dynamic(Screen* sc, DynamicEntity de)
 {
-    EtaCore::draw_fillrect(sc, de.pos, xy(de.pos.x + de.size, de.pos.y + de.size), de.c);
-}
+    if (de.image == NULL)
+        EtaCore::draw_fillrect(sc, de.pos, xy(de.pos.x + de.size.x, de.pos.y + de.size.y), de.c);
+    else
+    {
+        if (de.tex == NULL) printf("failed\n");
+        SDL_RenderCopy(sc->impl, de.tex, NULL, &de.rect);
+    }
+}*/
 
 Screen EtaCore::read_json(std::string file)
 {
@@ -190,6 +201,35 @@ void EtaCore::error_msg(const char* msg)
 #endif
 }
 
+dynamic_entity::dynamic_entity(Vec m_pos, Vec m_size, const char* m_image, Color m_c, float m_vel)
+    : pos(m_pos), size(m_size), image(m_image), c(m_c), vel(m_vel)
+{
+}
+
+void dynamic_entity::Setup(Screen* m_sc)
+{
+    sc = m_sc;
+    IMG_Init(IMG_INIT_PNG);
+    if (image != NULL)
+    {
+        rect = { (int)pos.x, (int)pos.y, (int)size.x, (int)size.y };
+        sur = IMG_Load(image);
+        tex = SDL_CreateTextureFromSurface(sc->impl, sur);
+        SDL_FreeSurface(sur);
+    }
+}
+
+void dynamic_entity::Draw()
+{
+    if (image == NULL)
+        EtaCore::draw_fillrect(sc, pos, xy(pos.x + size.x, pos.y + size.y), c);
+    else
+    {
+        rect = { (int)pos.x, (int)pos.y, (int)size.x, (int)size.y };
+        SDL_RenderCopy(sc->impl, tex, NULL, &rect);
+    }
+}
+
 void Eta::DrawMsgs()
 {
     for (Msg u : eta_msgs)
@@ -201,13 +241,13 @@ void Eta::DrawBoxes()
     for (Box u : eta_boxes)
         EtaCore::draw_box(&sc, &u);
 }
-
-void Eta::DrawEntities()
+/*
+void Eta::SetupEntities()
 {
     for (DynamicEntity u : eta_dynamic)
-        EtaCore::draw_dynamic(&sc, u);
+        u.Setup(&sc);
 }
-
+*/
 void Eta::ClearFrame()
 {
     EtaCore::clear_sdl(&sc);
@@ -220,6 +260,7 @@ int Eta::Run()
     ImGui::CreateContext();
     ImGuiSDL::Initialize(sc.impl, sc.dim.x, sc.dim.y);
     Setup();
+    //SetupEntities();
     dt = 0;
     Uint64 NOW = SDL_GetPerformanceCounter();
     Uint64 LAST = 0;
