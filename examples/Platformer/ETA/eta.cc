@@ -219,14 +219,14 @@ void dynamic_entity::Setup(Screen* m_sc)
     }
 }
 
-void dynamic_entity::Draw()
+void dynamic_entity::Draw(SDL_Rect size_rect)
 {
     if (image == NULL)
         EtaCore::draw_fillrect(sc, pos, xy(pos.x + size.x, pos.y + size.y), c);
     else
     {
         rect = { (int)pos.x, (int)pos.y, (int)size.x, (int)size.y };
-        SDL_RenderCopy(sc->impl, tex, NULL, &rect);
+        SDL_RenderCopy(sc->impl, tex, &size_rect, &rect);
     }
 }
 

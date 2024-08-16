@@ -99,7 +99,7 @@ typedef struct dynamic_entity {
     void SetCol(Color nc) { c = nc; }
     void SetImg(const char* nimage) { image = nimage; }
 
-    void Draw();
+    void Draw(SDL_Rect);
 private:
     SDL_Surface* sur;
     SDL_Texture* tex;

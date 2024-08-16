@@ -2,7 +2,8 @@
 
 Screen sc = {
 	.title = "Basic",
-	.dim = xy(1200, 800)
+	.dim = xy(1200, 800),
+	.bg = col(255, 255, 255, 255)
 };
 
 Box platforms[3] = {
@@ -26,7 +27,8 @@ Box platforms[3] = {
 	}
 };
 
-DynamicEntity player(xy(0, sc.dim.y - player.size.y), xy(32, 32), "sprite.png", col(255, 255, 255, 255), 0.5);
+int size = 162;
+DynamicEntity player(xy(0, sc.dim.y - player.size.y), xy((float) size, (float) size), "Idle.png", col(255, 255, 255, 255), 0.5);
 
 void Eta::Setup() 
 {
@@ -99,17 +101,17 @@ void Eta::Loop()
 	// player and platform
 	if ((player.is_jump && player.jump_count > 0) || falling)
 	{
-		if ((564 < player.pos.y && player.pos.y < 570) && ((player.pos.x > 100 && player.pos.x < 400) || (player.pos.x > 800 && player.pos.x < 1100)))
+		if ((598 - size < player.pos.y && player.pos.y < 602 - size) && ((player.pos.x > 100 && player.pos.x < 400) || (player.pos.x > 800 && player.pos.x < 1100)))
 		{
-			player.pos.y = 568;
+			player.pos.y = 600 - size;
 			player.is_jump = false;
 			on_platform1 = true;
 			on_platform2 = false;
 			falling = false;
 		}
-		else if ((416 < player.pos.y && player.pos.y < 420) && (player.pos.x > 300 && player.pos.x < 900))
+		else if ((448 - size < player.pos.y && player.pos.y < 452 - size) && (player.pos.x > 300 && player.pos.x < 900))
 		{
-			player.pos.y = 418;
+			player.pos.y = 450 - size;
 			player.is_jump = false;
 			on_platform2 = true;
 			on_platform1 = false;
@@ -125,87 +127,20 @@ void Eta::Loop()
 	}
 
 	// clamp player to window
-	if (player.pos.x > sc.dim.x - 32) { player.pos.x = sc.dim.x - 32; }
+	if (player.pos.x > sc.dim.x - size) { player.pos.x = sc.dim.x - size; }
 	if (player.pos.x < 0) player.pos.x = 0;
-	if (player.pos.y > sc.dim.y - 32) { player.pos.y = sc.dim.y - 32; player.is_jump = false; }
+	if (player.pos.y > sc.dim.y - size) { player.pos.y = sc.dim.y - size; player.is_jump = false; }
 	if (player.pos.y < 0) { player.pos.y = 0; player.move_up = false; }
 }
-
+SDL_Rect size_rect;
 void Eta::Render()
 {
-	//player.tex.pos = player.pos;
-	//EtaCore::draw_dynamic(&sc, player);
-	//SDL_RenderCopy(sc.impl, lettuce_tex, NULL, &bRect);
-	player.Draw();
+	size_rect = { 0, 0, size, size };
+	player.Draw(size_rect);
 }
 
 int main()
 {
 	Eta eta(sc);
 	return eta.Run();
-}/*
-
-
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-
-#define WIDTH 800
-#define HEIGHT 600
-#define IMG_PATH "../sprite.png"
-#include <iostream>
-
-int main(int argc, char* argv[]) {
-
-	printf(SDL_GetBasePath(), "%s");
-	// variable declarations
-	SDL_Window* win = NULL;
-	SDL_Renderer* renderer = NULL;
-	SDL_Texture* img = NULL;
-	int w, h; // texture width & height
-
-	// Initialize SDL.
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		return 1;
-
-	// create the window and renderer
-	// note that the renderer is accelerated
-	win = SDL_CreateWindow("Image Loading", 100, 100, WIDTH, HEIGHT, 0);
-	renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
-
-	SDL_Surface* lettuce_sur = IMG_Load("sprite.png");
-	if (lettuce_sur == NULL) {
-		std::cout << "Error loading image: " << IMG_GetError();
-		return 5;
-	}
-	SDL_Texture* lettuce_tex = SDL_CreateTextureFromSurface(renderer, lettuce_sur);
-	if (lettuce_tex == NULL) {
-		std::cout << "Error creating texture";
-		return 6;
-	}
-
-	SDL_FreeSurface(lettuce_sur);
-
-	// main loop
-	while (1) {
-
-		// event handling
-		SDL_Event e;
-		if (SDL_PollEvent(&e)) {
-			if (e.type == SDL_QUIT)
-				break;
-			else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_ESCAPE)
-				break;
-		}
-
-		SDL_RenderClear(renderer);
-		SDL_RenderCopy(renderer, lettuce_tex, NULL, NULL);
-		SDL_RenderPresent(renderer);
-	}
-
-	SDL_DestroyTexture(img);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(win);
-
-	return 0;
-}*/
+}
