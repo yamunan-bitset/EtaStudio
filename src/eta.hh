@@ -19,16 +19,24 @@
 #include <nlohmann/json.hpp>
 
 
-#define xy(x, y) Vec({x, y}) // position macro
+#define xy(x, y) Vec(x, y) // position macro
 #define col(r, g, b, a) Color({r, g, b, a}) // colour macro RGBA
 #define RGB(c) SDL_Color({c.r, c.g, c.b}) // convert color macro to RGB format
 #define RGBA(c) SDL_Color({c.r, c.g, c.b, 255}) // convert color macro from RGB format to RGBA format
 
 typedef struct vec {
+    vec() { }
+    vec(float m_x, float m_y)
+        : x(m_x), y(m_y) { }
     float x, y;
     bool operator==(const char arr[2])
     {
         if ((x == arr[0]) && (y == arr[1])) return true;
+        return false;
+    }
+    bool operator==(vec vec2)
+    {
+        if ((x == vec2.x) && (y == vec2.y)) return true;
         return false;
     }
 } Vec;
@@ -41,6 +49,8 @@ typedef struct color {
 } Color;
 
 typedef struct screen {
+    screen(std::string m_title, Vec m_dim, Color m_bg)
+		: title(m_title), dim(m_dim), bg(m_bg) { }
     std::string title;
     SDL_Window* window;
     SDL_Renderer* impl;
@@ -58,9 +68,11 @@ typedef struct keyboard {
 } Key;
 
 typedef struct msgs {
+    msgs(const char* m_str, Vec m_pos, const char* m_font, int m_size, Color m_c)
+		: str(m_str), pos(m_pos), font(m_font), size(m_size), c(m_c) { }
     const char* str;
     Vec pos;
-    char* font;
+    const char* font;
     int size;
     Color c;
 } Msg;
@@ -72,7 +84,8 @@ typedef struct tex {
 } Tex;
 
 typedef struct box {
-    Msg* msgs;
+    box(Vec m_top, Vec m_bottom, Color m_c)
+		: top(m_top), bottom(m_bottom), c(m_c) { }
     Tex* texs;
     Vec top, bottom;
     Color c;

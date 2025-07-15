@@ -163,13 +163,8 @@ Screen EtaCore::read_json(std::string file)
         bcol = bg.find(' ', ini);
         i++;
     }
-    Screen sc = {
-        .title = title,
-        .dim = xy(std::stof(dim.substr(0, pos)), std::stof(dim.substr(pos + 1, dim.size() - 1))),
-        .bg = { strs[0], strs[1], strs[2], strs[3] },
-        .fullscreen = false,
-        .done = false
-    };
+    Screen sc(title, xy(std::stof(dim.substr(0, pos)), std::stof(dim.substr(pos + 1, dim.size() - 1))), col(strs[0], strs[1], strs[2], strs[3]));
+    sc.done = false;
     return sc;
 }
 

@@ -28,7 +28,7 @@ Box platforms[3] = {
 };
 
 int size = 162;
-DynamicEntity player(xy(0, sc.dim.y - player.size.y), xy((float) size, (float) size), "Idle.png", col(255, 255, 255, 255), 0.5);
+DynamicEntity player(xy(0, sc.dim.y - player.size.y), xy((float) size, (float) size), "Attack1.png", col(255, 255, 255, 255), 0.5);
 
 void Eta::Setup() 
 {
@@ -67,7 +67,8 @@ void Eta::Handle()
 	}
 };
 
-int i = 0;
+SDL_Rect size_rect;
+int i = 0, state = 0;
 bool on_platform1 = false;
 bool on_platform2 = false;
 bool falling = false;
@@ -131,11 +132,17 @@ void Eta::Loop()
 	if (player.pos.x < 0) player.pos.x = 0;
 	if (player.pos.y > sc.dim.y - size) { player.pos.y = sc.dim.y - size; player.is_jump = false; }
 	if (player.pos.y < 0) { player.pos.y = 0; player.move_up = false; }
+
+	// Idle state
+	if (dt == 0.5) state++;
+	if (i % 200 == 0)
+		size_rect = { 162, 0, 324, 162 };
+	else
+		size_rect = { 0, 0, 162, 162 };
 }
-SDL_Rect size_rect;
+
 void Eta::Render()
 {
-	size_rect = { 0, 0, size, size };
 	player.Draw(size_rect);
 }
 

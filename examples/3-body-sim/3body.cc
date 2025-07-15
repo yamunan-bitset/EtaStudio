@@ -1,16 +1,11 @@
 // Example file for 3body simulator
+#if 0
 #include "../../src/eta.hh"
 #include "../../src/imgui_sdl.hh"
 
 using namespace EtaCore;
 
-Screen sc = { // = read_json("window.json");
-	.title = "3-Body Simulator",
-	.dim = xy(1400, 900),
-	.bg = { 10, 10, 50, 255 },
-	.fullscreen = false,
-	.done = false
-};
+Screen sc("3-body Simulator", xy(1400, 900), col(10, 10, 50, 255));
 
 // 3 bodies:
 Vec b1 = { 0, 0 }, b2 = { 0, 0 }, b3 = { 0, 0 };
@@ -19,27 +14,11 @@ float m1 = 1.f, m2 = 1.f, m3 = 1.f;
 bool start_sim = false;
 
 Msg msg[2] = {
-	  {
-		.str = "Press h for Help",
-		.pos = xy(1130, 825),
-		.font = "TheSansPlain.ttf",
-		.size = 20,
-		.c = col(255, 0, 0, 255)
-	  },
-	  {
-		.str = "Press Space to start sim",
-		.pos = xy(1100, 850),
-		.font = "TheSansPlain.ttf",
-		.size = 20,
-		.c = col(0, 255, 0, 255)
-	  }
+	Msg("Press h for Help", xy(1130, 825), "TheSansPlain.ttf", 20, col(255, 0, 0, 255)),
+	Msg("Press Space to start sim", xy(1100, 850), "TheSansPlain.ttf", 20, col(0, 255, 0, 255))
 };
 
-Box bx1 = {
-		.top = xy(1100, 700),
-		.bottom = xy(1300, 900),
-		.c = col(200, 100, 50, 255)
-};
+Box bx1(xy(1100, 700), xy(1300, 900), col(200, 100, 50, 255));
 
 // Setup
 void Eta::Setup()
@@ -156,3 +135,5 @@ int main()
 	Eta eta(sc);
 	return eta.Run();
 }
+
+#endif
